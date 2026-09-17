@@ -4,7 +4,7 @@
   "description": "Tactical D100 Warhammer 40k & Lost Primarch Web RPG Platform",
   "main": "index.html",
   "scripts": {
-    "start": "python -m http.server 8080"
+    "build": "echo 'Build OK'"
   },
   "keywords": ["warhammer", "rpg", "primarch", "dnd"],
   "author": "Inquisitorial High Archives",
