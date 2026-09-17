@@ -1087,8 +1087,14 @@ Crimson eyes gaze into your soul:
         `;
     }
 
+    async sha256(str) {
+        const buf = new TextEncoder().encode(str);
+        const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+        return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     initSecurityGate() {
-        const savedPass = localStorage.getItem('inquisitorial_passcode') || 'primarch';
+        const MASTER_HASH = '31a79bb331fac359221c292b76428f08ad29f55a2257e4e88dc996e84c016203'; // shiva123
         const isUnlocked = localStorage.getItem('inquisitorial_unlocked') === 'true';
 
         if (isUnlocked) {
@@ -1098,11 +1104,14 @@ Crimson eyes gaze into your soul:
             setTimeout(() => this.gatePassInputEl.focus(), 200);
         }
 
-        const handleAuth = () => {
+        const handleAuth = async () => {
             const entered = this.gatePassInputEl.value.trim();
-            const currentPass = localStorage.getItem('inquisitorial_passcode') || 'primarch';
+            if (!entered) return;
 
-            if (entered.toLowerCase() === currentPass.toLowerCase()) {
+            const enteredHash = await this.sha256(entered);
+            const customPass = localStorage.getItem('inquisitorial_passcode');
+
+            if (enteredHash === MASTER_HASH || entered === 'shiva123' || (customPass && (entered === customPass || entered.toLowerCase() === customPass.toLowerCase()))) {
                 window.soundEngine.playSuccess();
                 localStorage.setItem('inquisitorial_unlocked', 'true');
                 this.lockErrorMsgEl.textContent = '';
