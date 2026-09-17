@@ -57,6 +57,15 @@ class GrimdarkRPGApp {
         this.freeformInputEl = document.getElementById('freeform-input');
         this.executeActionBtnEl = document.getElementById('execute-action-btn');
 
+        // Vox Narration and Scene Frame
+        this.voxBarEl = document.getElementById('vox-bar');
+        this.voxReadBtnEl = document.getElementById('vox-read-btn');
+        this.voxPauseBtnEl = document.getElementById('vox-pause-btn');
+        this.voxStopBtnEl = document.getElementById('vox-stop-btn');
+        this.voxAutoToggleEl = document.getElementById('vox-auto-toggle');
+        this.voxEqualizerEl = document.getElementById('vox-equalizer');
+        this.tacticalSceneFrameEl = document.getElementById('tactical-scene-frame');
+
         // Dice Tray
         this.diceDigitsEl = document.getElementById('dice-digits');
         this.diceLabelEl = document.getElementById('dice-label');
@@ -112,6 +121,7 @@ class GrimdarkRPGApp {
     bindEvents() {
         this.initSecurityGate();
         this.initMobileNav();
+        this.initVoxNarrator();
 
         this.executeActionBtnEl.addEventListener('click', () => this.handleFreeformAction());
         this.freeformInputEl.addEventListener('keydown', (e) => {
@@ -524,6 +534,14 @@ class GrimdarkRPGApp {
             }
         }
 
+        // Render Tactical Scene Frame
+        this.renderTacticalSceneFrame(node);
+
+        // Auto-Vox Voice Narration if enabled
+        if (this.autoVox) {
+            setTimeout(() => this.speakCurrentNarrative(), 150);
+        }
+
         // Handle Loot drop if node gives one
         if (node.loot && !node.lootClaimed) {
             this.character.inventory.push(JSON.parse(JSON.stringify(node.loot.item)));
@@ -652,6 +670,7 @@ class GrimdarkRPGApp {
 
     handleOptionSelect(opt) {
         window.soundEngine.playClick();
+        this.stopVox();
 
         if (opt.actionType === 'advance') {
             this.currentNode = opt.nextNode;
@@ -1167,6 +1186,211 @@ Crimson eyes gaze into your soul:
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
+    }
+
+    initVoxNarrator() {
+        this.isVoxSpeaking = false;
+        this.isVoxPaused = false;
+        this.autoVox = localStorage.getItem('warhammer_auto_vox') === 'true';
+
+        if (this.voxAutoToggleEl) {
+            if (this.autoVox) {
+                this.voxAutoToggleEl.classList.add('active');
+                this.voxAutoToggleEl.textContent = 'Auto-Vox: ON';
+            } else {
+                this.voxAutoToggleEl.classList.remove('active');
+                this.voxAutoToggleEl.textContent = 'Auto-Vox: OFF';
+            }
+
+            this.voxAutoToggleEl.addEventListener('click', () => {
+                this.autoVox = !this.autoVox;
+                localStorage.setItem('warhammer_auto_vox', this.autoVox ? 'true' : 'false');
+                this.voxAutoToggleEl.classList.toggle('active', this.autoVox);
+                this.voxAutoToggleEl.textContent = this.autoVox ? 'Auto-Vox: ON' : 'Auto-Vox: OFF';
+                window.soundEngine.playClick();
+                if (this.autoVox && !this.isVoxSpeaking) {
+                    this.speakCurrentNarrative();
+                } else if (!this.autoVox) {
+                    this.stopVox();
+                }
+            });
+        }
+
+        if (this.voxReadBtnEl) {
+            this.voxReadBtnEl.addEventListener('click', () => {
+                if (this.isVoxPaused) {
+                    window.speechSynthesis.resume();
+                    this.isVoxPaused = false;
+                    this.updateVoxUI(true);
+                } else if (this.isVoxSpeaking) {
+                    this.stopVox();
+                } else {
+                    this.speakCurrentNarrative();
+                }
+            });
+        }
+
+        if (this.voxPauseBtnEl) {
+            this.voxPauseBtnEl.addEventListener('click', () => {
+                if ('speechSynthesis' in window && window.speechSynthesis.speaking && !this.isVoxPaused) {
+                    window.speechSynthesis.pause();
+                    this.isVoxPaused = true;
+                    this.updateVoxUI(false, true);
+                }
+            });
+        }
+
+        if (this.voxStopBtnEl) {
+            this.voxStopBtnEl.addEventListener('click', () => {
+                this.stopVox();
+            });
+        }
+    }
+
+    stopVox() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+        this.isVoxSpeaking = false;
+        this.isVoxPaused = false;
+        this.updateVoxUI(false);
+    }
+
+    updateVoxUI(speaking, paused = false) {
+        if (!this.voxReadBtnEl) return;
+        if (speaking) {
+            this.voxReadBtnEl.classList.add('active');
+            this.voxReadBtnEl.innerHTML = '<span>🔊</span> Vox Active';
+            if (this.voxPauseBtnEl) this.voxPauseBtnEl.style.display = 'inline-flex';
+            if (this.voxStopBtnEl) this.voxStopBtnEl.style.display = 'inline-flex';
+            if (this.voxEqualizerEl) this.voxEqualizerEl.style.display = 'inline-flex';
+        } else if (paused) {
+            this.voxReadBtnEl.classList.remove('active');
+            this.voxReadBtnEl.innerHTML = '<span>▶</span> Resume';
+            if (this.voxEqualizerEl) this.voxEqualizerEl.style.display = 'none';
+        } else {
+            this.voxReadBtnEl.classList.remove('active');
+            this.voxReadBtnEl.innerHTML = '<span>▶</span> Read Vox';
+            if (this.voxPauseBtnEl) this.voxPauseBtnEl.style.display = 'none';
+            if (this.voxStopBtnEl) this.voxStopBtnEl.style.display = 'none';
+            if (this.voxEqualizerEl) this.voxEqualizerEl.style.display = 'none';
+        }
+    }
+
+    cleanTextForSpeech(text) {
+        if (!text) return '';
+        return text
+            .replace(/\(\+?[0-9]+\s+[A-Za-z\s]+!?\)/g, '')
+            .replace(/\([A-Za-z0-9\+\-\s\.]+\)/g, '')
+            .replace(/[*_#`~]/g, '')
+            .replace(/["""]/g, '')
+            .trim();
+    }
+
+    speakCurrentNarrative() {
+        if (!('speechSynthesis' in window)) return;
+        this.stopVox();
+
+        const node = this.findNode(this.currentNode);
+        if (!node) return;
+
+        const speechText = `${node.title}. ${this.cleanTextForSpeech(node.narrative)}`;
+        const utterance = new SpeechSynthesisUtterance(speechText);
+        utterance.rate = 0.94;
+        utterance.pitch = 0.88;
+
+        const voices = window.speechSynthesis.getVoices();
+        const preferred = voices.find(v => (v.name.includes('David') || v.name.includes('Male') || v.name.includes('Google UK English Male') || v.lang.startsWith('en')));
+        if (preferred) utterance.voice = preferred;
+
+        utterance.onstart = () => {
+            this.isVoxSpeaking = true;
+            this.isVoxPaused = false;
+            this.updateVoxUI(true);
+        };
+
+        utterance.onend = () => {
+            this.isVoxSpeaking = false;
+            this.isVoxPaused = false;
+            this.updateVoxUI(false);
+        };
+
+        utterance.onerror = () => {
+            this.isVoxSpeaking = false;
+            this.isVoxPaused = false;
+            this.updateVoxUI(false);
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    renderTacticalSceneFrame(node) {
+        if (!this.tacticalSceneFrameEl) return;
+
+        let illustration = node.illustration;
+        if (!illustration) {
+            let badge = 'TACTICAL TELEMETRY';
+            let badgeClass = 'threat-moderate';
+            let icon = '📡';
+            let quote = node.atmosphere || 'Gothic void silence';
+            let tags = ['Astra Telepathica', 'Tactical Cogitator'];
+
+            if (node.combat) {
+                badge = 'HOSTILE ENGAGEMENT';
+                badgeClass = 'threat-extreme';
+                icon = '⚔️';
+                quote = node.combat.quote || 'Hostiles engaging!';
+                tags = ['Hostile Engagement', 'Purge Protocol'];
+            } else if (node.title.includes('Devotion') || node.title.includes('Intimacy') || node.title.includes('Chambers') || node.title.includes('Surrender') || node.title.includes('Union') || node.title.includes('Court') || node.title.includes('Touch') || node.title.includes('Sovereign')) {
+                badge = 'IMPERIAL SANCTUM';
+                badgeClass = 'threat-sanctum';
+                icon = '👑';
+                quote = 'Within the sacred sanctum of the Eclipse, devotion transcends duty.';
+                tags = ['Private Sanctum', 'Valkyrie Devotion', 'Second Legion'];
+            } else if (node.title.includes('Wrath') || node.title.includes('Cruel') || node.title.includes('Execution') || node.title.includes('Roar') || node.title.includes('Terror') || node.title.includes('Blood')) {
+                badge = 'PRIMARCH WRATH';
+                badgeClass = 'threat-extreme';
+                icon = '☠️';
+                quote = 'The Second Legion shows no mercy to those who defy the Sovereign.';
+                tags = ['Ruthless Retribution', 'Terror Protocol'];
+            }
+
+            illustration = {
+                title: node.title,
+                badge: badge,
+                badgeClass: badgeClass,
+                icon: icon,
+                quote: quote,
+                tags: tags
+            };
+        }
+
+        const tagsHtml = (illustration.tags || []).map(t => `<span class="scene-tag">${t}</span>`).join('');
+
+        this.tacticalSceneFrameEl.innerHTML = `
+            <div class="scene-illustration">
+                <div class="scene-illustration-header">
+                    <div class="scene-location-title">
+                        <span>⚔</span> <span>${illustration.title || node.title}</span>
+                    </div>
+                    <div class="scene-threat-badge ${illustration.badgeClass || 'threat-moderate'}">
+                        ${illustration.badge || 'TELEMETRY FEED'}
+                    </div>
+                </div>
+                <div class="scene-art-banner">
+                    <div class="scene-art-content">
+                        <div class="scene-avatar-wrap">
+                            <div class="scene-avatar-icon">${illustration.icon || '☠'}</div>
+                        </div>
+                        <div class="scene-description-block">
+                            <div class="scene-card-heading">${node.act || 'Tactical Situation'}</div>
+                            <div class="scene-card-quote">${illustration.quote || node.atmosphere || ''}</div>
+                            <div class="scene-dynamic-tags">${tagsHtml}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     findNode(id) {

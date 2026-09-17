@@ -828,7 +828,7 @@ A horde of mutated void scavengers bursts through the vault doors, armed with he
                     attackRoll: 38,
                     weapon: { name: 'Scrap Autoguns & Cleavers', damage: '1d10+4', pen: 2 },
                     quote: '"Kill the sleeping god! Take the golden armor!"',
-                    onDefeatNode: 'lp_ch2_flagship_triumph'
+                    onDefeatNode: 'lp_ch1_aftermath_crossroad'
                 }
             },
 
@@ -849,7 +849,7 @@ A horde of mutated void scavengers bursts through the vault doors, armed with he
                     attackRoll: 45,
                     weapon: { name: 'Scrap Autoguns & Cleavers', damage: '1d10+4', pen: 2 },
                     quote: '"Take their heads! Flesh for the harvest!"',
-                    onDefeatNode: 'lp_ch2_flagship_triumph'
+                    onDefeatNode: 'lp_ch1_aftermath_crossroad'
                 }
             },
 
@@ -874,7 +874,7 @@ The scavengers spill into the chamber and freeze in absolute terror as you step 
                     attackRoll: 35,
                     weapon: { name: 'Desperate Gunfire', damage: '1d10+3', pen: 1 },
                     quote: '"BY THE GODS, IT’S A LIVING TITAN! RUN—!"',
-                    onDefeatNode: 'lp_ch2_flagship_triumph'
+                    onDefeatNode: 'lp_ch1_aftermath_crossroad'
                 }
             },
 
@@ -893,7 +893,7 @@ The scavengers spill into the chamber and freeze in absolute terror as you step 
                     attackRoll: 42,
                     weapon: { name: 'Scrap Autoguns & Cleavers', damage: '1d10+4', pen: 2 },
                     quote: '"Rip the demigod from the throne!"',
-                    onDefeatNode: 'lp_ch2_flagship_triumph'
+                    onDefeatNode: 'lp_ch1_aftermath_crossroad'
                 }
             },
 
@@ -914,7 +914,7 @@ Half the mutant marauders collapse clutching their ruptured eardrums, vomiting b
                     attackRoll: 30,
                     weapon: { name: 'Scrambling Blades', damage: '1d10+2', pen: 0 },
                     quote: '"MERCY! MERCY FROM THE SLEEPING GOD!"',
-                    onDefeatNode: 'lp_ch2_flagship_triumph'
+                    onDefeatNode: 'lp_ch1_aftermath_crossroad'
                 }
             },
 
@@ -933,8 +933,110 @@ Half the mutant marauders collapse clutching their ruptured eardrums, vomiting b
                     attackRoll: 45,
                     weapon: { name: 'Whirling Chain-Cleavers', damage: '1d10+5', pen: 2 },
                     quote: '"BLOOD AND SCRAP FOR THE PACK!"',
-                    onDefeatNode: 'lp_ch2_flagship_triumph'
+                    onDefeatNode: 'lp_ch1_aftermath_crossroad'
                 }
+            },
+
+            // ACT I AFTERMATH: MORAL CROSSROADS (CRUELTY VS COMPASSION)
+            {
+                id: 'lp_ch1_aftermath_crossroad',
+                title: 'Act I: The Spoils of the Slaughter',
+                act: 'Act I - Moral Judgment',
+                atmosphere: 'Smoking las-burns, severed mutant limbs, smell of ozone and burnt hair, groans of wounded survivors.',
+                narrative: `The battle is over. The stasis vault is slick with mutant gore. 
+                
+First Captain Valerie wipes her blood-dripping power-glaive on the cloak of a fallen warlord, sheathing her blades with a metallic clack. Half a dozen terrified surviving marauders—mutilated scavengers and chained slave-thralls—huddle against the vault bulkhead, trembling as they gaze upon your towering, godlike form.
+                
+"Three warlords still draw breath, my Sovereign," Valerie reports, stepping close so her armored shoulder brushes gently against yours. Her golden eyes glitter with violent adrenaline. "And a dozen chained thralls cower behind them. What is your judgment upon these wretches?"
+                
+Morgana steps forward, her amethyst eyes soft with empathy: "The thralls bear the slave-brands of the pirate clans. They were pressed into service by whip and iron."
+                
+The fate of these survivors will set the tone for your reborn Legion.`,
+                options: [
+                    {
+                        label: '☠ CRUEL WRATH: Flay the warlords alive and mount their skulls upon the vault gates as a bloody warning',
+                        actionType: 'advance',
+                        desc: 'Unleash merciless Primarch terror. Instill absolute dread across the sub-sector.',
+                        nextNode: 'lp_ch1_aftermath_cruel'
+                    },
+                    {
+                        label: '👑 COMPASSIONATE GRACE: Execute the pirate warlords cleanly, but liberate the slave-thralls under your divine protection',
+                        actionType: 'advance',
+                        desc: 'Prove you are not the heartless tyrant the Emperor was. Gain the eternal loyalty of mortal subjects.',
+                        nextNode: 'lp_ch1_aftermath_mercy'
+                    },
+                    {
+                        label: '⚡ COLD EFFICIENCY: Strip all salvage, process the bio-matter for legion stimms, and board the flagship immediately',
+                        actionType: 'advance',
+                        desc: 'Waste no time on sentiment or theatrical cruelty. The Second Legion marches on pure discipline.',
+                        nextNode: 'lp_ch1_aftermath_pragmatic'
+                    }
+                ]
+            },
+
+            {
+                id: 'lp_ch1_aftermath_cruel',
+                title: 'The Blood-Trophy of the Sovereign',
+                act: 'Act I - The Cruel Path',
+                atmosphere: 'Screams echoing into the void, blood dripping from iron spikes, savage pride in Valerie’s gaze.',
+                narrative: `You step forward, your towering presence blotting out the vault lights. With cold, merciless deliberate cruelty, you hoist the lead marauder by his throat. 
+                
+"You sought to scavenge a Primarch," your voice booms with terrifying finality. "Your flesh shall serve as my proclamation to this quadrant."
+                
+Valerie smiles with savage, intoxicating bloodlust. Her daughters drag the warlords to the outer airlock gates, pinning their flayed torsos and severed skulls to the adamantine hull in full view of any approaching scout vessels. The broadcasts of their dying agony are wired into the distress beacons, radiating across the sub-sector.
+                
+Valerie approaches you, dropping to one knee before the gruesome display. She lifts your bloodstained hand and presses a passionate, reverent kiss to your knuckles:
+                
+"Magnificent, my Sovereign..." she breathes, shivers of raw excitement running through her body. "The galaxy only respects monsters and gods. Today, you showed them you are both." (+20 Devotion with Valerie! Gained Terror Aura!). Restored to full vigor!`,
+                options: [
+                    {
+                        label: 'Board the Starlight Eclipse and retire to your private stateroom with your daughters',
+                        actionType: 'advance',
+                        nextNode: 'lp_ch2_flagship_triumph'
+                    }
+                ]
+            },
+
+            {
+                id: 'lp_ch1_aftermath_mercy',
+                title: 'The Sovereign’s Divine Aegis',
+                act: 'Act I - The Compassionate Path',
+                atmosphere: 'Shattered chains, weeping mortals kneeling in awe, warm psychic serenity.',
+                narrative: `You draw your relic blade and cleanly decapitate the three warlords with a single blinding sweep—quick and merciful compared to Imperial justice.
+                
+Then you step toward the trembling slave-thralls. You reach down with your massive gauntlet and snap their iron collar-chains with your bare fingers. 
+                
+"Rise," you command gently, your voice resonant with an aura of protective divinity that makes their tear-streaked eyes widen in reverent awe. "The Emperor condemned the weak. I do not. From this moment, you are under the sacred protection of the Second Legion. Speak my name, and no tyrant in this galaxy shall lay hand upon you."
+                
+The mortals collapse in tears of worship, kissing the dust at your feet: "The Living God... Our Savior...!"
+                
+Chief Librarian Morgana smiles radiantly, tears of pride brimming in her amethyst eyes. She reaches out and lovingly touches your armored arm: "Father... Beloved... Your heart remains unbroken by ten thousand years of cold sleep. This is why we fought across the void to bring you back." (+20 Devotion with Morgana! +1 Fate Point!). Restored to full vigor!`,
+                options: [
+                    {
+                        label: 'Transport the freed mortals to the flagship and retire to your private quarters',
+                        actionType: 'advance',
+                        nextNode: 'lp_ch2_flagship_triumph'
+                    }
+                ]
+            },
+
+            {
+                id: 'lp_ch1_aftermath_pragmatic',
+                title: 'The Calculating Demigod',
+                act: 'Act I - The Pragmatic Path',
+                atmosphere: 'Hissing narthecium needles, auspex scanners humming, swift cold mobilization.',
+                narrative: `You wave your hand dismissively. "Valerie, execute them all. Selene, extract their genetic tissue and adrenal compounds for medical synthesis. We do not linger in an exposed crypt."
+                
+With chilling military precision, bolter rounds silence the survivors. Selene immediately steps in with her Narthecium reductor, harvesting bio-stimms and rare cybernetics with surgical grace.
+                
+"A wise commander wastes nothing," Selene murmurs approvingly as she hands you a synthesized combat stimulant. Her fingertips linger against your palm, her dark eyes flashing with quiet desire. "Your pragmatism will keep our legion alive, my Sovereign. Allow me to tend to your rest once we are aboard." (+20 Devotion with Selene! Gained Medicae Stimms x2!). Restored to full vigor!`,
+                options: [
+                    {
+                        label: 'Board the Starlight Eclipse and retire to your private chambers',
+                        actionType: 'advance',
+                        nextNode: 'lp_ch2_flagship_triumph'
+                    }
+                ]
             },
 
             // ACT II: THE FLAGSHIP & PRIVATE QUARTERS (DEEP PASSION & ROMANCE)
@@ -1144,7 +1246,7 @@ Lord Hector shrieks in panicked fury as his own fleet betrays him! He deploys hi
                     attackRoll: 50,
                     weapon: { name: 'Inferno Pistol & Master Power Blade', damage: '2d10+4', pen: 6 },
                     quote: '"You are a forgotten ghost! The Inquisition rules this Imperium!"',
-                    onDefeatNode: 'lp_ch4_sovereign_epilogue'
+                    onDefeatNode: 'lp_ch4_hector_crossroad'
                 }
             },
 
@@ -1163,7 +1265,7 @@ Lord Hector shrieks in panicked fury as his own fleet betrays him! He deploys hi
                     attackRoll: 52,
                     weapon: { name: 'Inferno Pistol & Master Power Blade', damage: '2d10+4', pen: 6 },
                     quote: '"Cleanse the abomination! Suffer not the forgotten to live!"',
-                    onDefeatNode: 'lp_ch4_sovereign_epilogue'
+                    onDefeatNode: 'lp_ch4_hector_crossroad'
                 }
             },
 
@@ -1186,7 +1288,7 @@ Hector scrambles backward in terror, drawing his mastercrafted weapons!`,
                     attackRoll: 42,
                     weapon: { name: 'Desperate Inferno Pistol', damage: '2d10+4', pen: 5 },
                     quote: '"Stay back! The Emperor will strike you down!"',
-                    onDefeatNode: 'lp_ch4_sovereign_epilogue'
+                    onDefeatNode: 'lp_ch4_hector_crossroad'
                 }
             },
 
@@ -1205,7 +1307,7 @@ Hector scrambles backward in terror, drawing his mastercrafted weapons!`,
                     attackRoll: 50,
                     weapon: { name: 'Heavy Bolters & Power Halberds', damage: '2d10+4', pen: 5 },
                     quote: '"Hold the line! Purge the Primarch!"',
-                    onDefeatNode: 'lp_ch4_sovereign_epilogue'
+                    onDefeatNode: 'lp_ch4_hector_crossroad'
                 }
             },
 
@@ -1228,7 +1330,7 @@ Lord Hector’s flagship drifts dead in the water as you teleport aboard to clai
                     attackRoll: 40,
                     weapon: { name: 'Master Power Blade', damage: '2d10+3', pen: 4 },
                     quote: '"Witchcraft! Unholy sorcery!"',
-                    onDefeatNode: 'lp_ch4_sovereign_epilogue'
+                    onDefeatNode: 'lp_ch4_hector_crossroad'
                 }
             },
 
@@ -1247,8 +1349,87 @@ Lord Hector’s flagship drifts dead in the water as you teleport aboard to clai
                     attackRoll: 50,
                     weapon: { name: 'Inferno Pistol & Master Blade', damage: '2d10+4', pen: 6 },
                     quote: '"The Null field holds! Kill the witch-Primarch!"',
-                    onDefeatNode: 'lp_ch4_sovereign_epilogue'
+                    onDefeatNode: 'lp_ch4_hector_crossroad'
                 }
+            },
+
+            // ACT IV: THE FATE OF THE INQUISITOR & FINAL ASCENDANCE
+            {
+                id: 'lp_ch4_hector_crossroad',
+                title: 'Act IV: The Kneeling Inquisitor',
+                act: 'Act IV - Supreme Judgment',
+                atmosphere: 'Broken gold rosette on the deck, weeping naval officers, heavy silence before godhood.',
+                narrative: `Inquisitor Lord Hector collapses at your feet, coughing blood into his silver-threaded uniform. His shattered mastercrafted blade lies in pieces upon the decking.
+                
+Across the command bridge, hundreds of Imperial serfs, rating-officers, and servo-skulls cower in stunned silence. The Starlight Eclipse looms in the observation bay, her cyclonic torpedo tubes armed and aimed directly at the heart of the sub-sector capital.
+                
+Valerie plants her armored boot upon Hector’s spine, pressing the tip of her glaive against his throat. 
+                
+"Your decree of oblivion dies with you, worm," Valerie spits, glancing up at you with breathless adoration. "He is yours, my Sovereign. How shall we execute the sentence of the Second Legion?"`,
+                options: [
+                    {
+                        label: '☠ CRUEL EXTERMINATION: Rip out Hector’s augmetics, strap him to the prow, and obliterate the Inquisitorial cruisers',
+                        actionType: 'advance',
+                        desc: 'Make Holy Terra tremble. Show the galaxy that defiance of the II Legion earns terrifying death.',
+                        nextNode: 'lp_ch4_fate_cruel'
+                    },
+                    {
+                        label: '🧠 TELEPATHIC ENSLAVEMENT: Have Morgana rewrite Hector’s mind into a groveling spy feeding you Terran secrets',
+                        actionType: 'advance',
+                        desc: 'Turn the Inquisition into your personal pawns while maintaining the illusion of Imperial silence.',
+                        nextNode: 'lp_ch4_fate_mercy'
+                    },
+                    {
+                        label: '👑 GENE-ASCENSION: Allow Selene to extract Inquisitorial command ciphers and declare your Sovereign Empire',
+                        actionType: 'advance',
+                        desc: 'Claim the fleet, absorb their resources, and ascend the imperial throne of your new realm.',
+                        nextNode: 'lp_ch4_sovereign_epilogue'
+                    }
+                ]
+            },
+
+            {
+                id: 'lp_ch4_fate_cruel',
+                title: 'The Terror of Holy Terra',
+                act: 'Act IV - The Cruel Sovereign',
+                atmosphere: 'Cyclonic fireballs consuming void cruisers, cheers of bloodlust, iron wrath.',
+                narrative: `You step forward and crush Hector’s silver Rosette under your heel. With your bare hands, you rip out his cybernetic respiratory implants as he screams in agonizing horror.
+                
+"Mount his broken shell upon the armored prow of our battleship," you command Valerie. "And fire the cyclonic warheads. Cleanse the remaining Inquisitorial vessels down to molecular dust."
+                
+Valerie shivers with ecstatic adrenaline, her golden eyes blazing with savage pride: "BY YOUR WILL, MY WRATHFUL GOD!"
+                
+The Starlight Eclipse fires. Torpedoes strike the Inquisitorial vessels, turning them into expanding nebulae of fire and atomized metal. The psychic vox screams of the dying fleet resonate across fifty light-years, striking sheer panic into the High Lords of Terra.
+                
+Valerie throws her arms around your neck right on the bridge, pressing her lips to yours in a deep, blood-fueled victory kiss (+30 Devotion with Valerie!). Restored to full vigor!`,
+                options: [
+                    {
+                        label: 'Ascend the High Throne of your Sovereign Empire alongside your Valkyrie Queens',
+                        actionType: 'advance',
+                        nextNode: 'lp_ch4_sovereign_epilogue'
+                    }
+                ]
+            },
+
+            {
+                id: 'lp_ch4_fate_mercy',
+                title: 'The Shadow Puppeteer',
+                act: 'Act IV - The Subtle God',
+                atmosphere: 'Silver psychic tendrils burrowing into bone, blank staring eyes, masterclass subterfuge.',
+                narrative: `You hold up your hand, staying Valerie’s blade. "Death is too simple for an Inquisitor. Morgana, break his mind. Re-weave his soul so he sees only my divine truth."
+                
+Morgana steps forward with a sultry, predatory smile. She places her palms against Hector’s temples. Amethyst psychic light flares violently, searing away his fanatical Terran dogmas. 
+                
+When the glow fades, Hector blinks with hollow, blissful worship, kneeling to kiss your boots: "My God... My Sovereign... I shall tell Terra all is calm. Every secret of the Holy Ordos is yours."
+                
+Morgana steps into your arms, breathing softly against your ear: "He is our puppet now, my love. Terra will send you fleets and tithes, never knowing they feed their greatest conqueror." (+30 Devotion with Morgana!). Restored to full vigor!`,
+                options: [
+                    {
+                        label: 'Ascend the High Throne of your Sovereign Empire alongside your Valkyrie Queens',
+                        actionType: 'advance',
+                        nextNode: 'lp_ch4_sovereign_epilogue'
+                    }
+                ]
             },
 
             // ACT IV: EPILOGUE & CORONATION
@@ -1257,9 +1438,9 @@ Lord Hector’s flagship drifts dead in the water as you teleport aboard to clai
                 title: '★ ACT IV: SOVEREIGN OF THE ECLIPSE ★',
                 act: 'Epilogue - The Empire of the Daughters',
                 atmosphere: 'Golden banners waving, thunderous cheers of ten thousand Valkyries, star systems surrendering, loving warmth on the throne.',
-                narrative: `Inquisitor Lord Hector collapses at your feet, his shattered blade skittering across the blood-soaked deck. With a wave of your hand, you order the Imperial survivors spared and brought under your banner.
+                narrative: `Inquisitor Lord Hector’s armada is crushed, and the sub-sector bows before your undeniable divine majesty.
                 
-Word spreads like wildfire across the sub-sector:
+Word spreads like wildfire across the stars:
 THE FORGOTTEN PRIMARCH HAS RETURNED.
                 
 Planets, forge-worlds, and naval stations cast off the oppressive yoke of the corrupt Terran bureaucracy, swearing fealty to the Second Legion. You carve out an independent, enlightened realm of stars—the Eclipse Sovereign Commonwealth.

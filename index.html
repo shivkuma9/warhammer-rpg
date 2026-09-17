@@ -143,6 +143,28 @@
                     Awaiting bio-telemetry feed...
                 </div>
 
+                <!-- Vox Voice Synthesizer Control Bar -->
+                <div class="vox-bar" id="vox-bar">
+                    <div class="vox-status-group">
+                        <span class="vox-icon">🎙️</span>
+                        <span class="vox-label">INQUISITORIAL VOX-NARRATOR</span>
+                        <div class="vox-equalizer" id="vox-equalizer" style="display: none;">
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="vox-controls">
+                        <button class="vox-btn" id="vox-read-btn" title="Read story aloud with Inquisitorial Vox"><span>▶</span> Read Vox</button>
+                        <button class="vox-btn" id="vox-pause-btn" title="Pause Vox Narration" style="display: none;"><span>⏸</span> Pause</button>
+                        <button class="vox-btn" id="vox-stop-btn" title="Silence Vox Narration" style="display: none;"><span>⏹</span> Silence</button>
+                        <button class="vox-toggle-btn" id="vox-auto-toggle" title="Auto-narrate new story chapters">Auto-Vox: OFF</button>
+                    </div>
+                </div>
+
+                <!-- Tactical Scene Frame / Visual Illustration -->
+                <div class="tactical-scene-frame" id="tactical-scene-frame">
+                    <!-- Populated dynamically -->
+                </div>
+
                 <!-- Dynamic Narrative Prose -->
                 <div class="narrative-prose" id="narrative-text">
                     Connecting to Imperial Data-Vault...
