@@ -1,0 +1,12 @@
+{
+  "name": "warhammer-lost-primarch-rpg",
+  "version": "1.0.0",
+  "description": "Tactical D100 Warhammer 40k & Lost Primarch Web RPG Platform",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8080"
+  },
+  "keywords": ["warhammer", "rpg", "primarch", "dnd"],
+  "author": "Inquisitorial High Archives",
+  "license": "MIT"
+}

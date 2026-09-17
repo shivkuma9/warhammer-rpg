@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Warhammer 40,000 & Mythic RPG Engine - Tactical D100 Grimdark Tabletop Campaign with Interactive Mechanics, Freeform Roleplay Input, and Audio Ambience">
+    <title>WARHAMMER 40K: INQUISITORIAL COGITATOR & LOST PRIMARCH RPG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Inquisitorial Security Clearance Lock Gate -->
+    <div class="lock-gate-backdrop" id="lock-gate-backdrop" style="display: flex;">
+        <div class="lock-gate-box">
+            <div class="lock-aquila">☠</div>
+            <h2 class="lock-title">INQUISITORIAL SECURITY CLEARANCE</h2>
+            <div class="lock-subtitle">LEVEL VERMILLION // CLASSIFIED PRIMARCH ARCHIVES</div>
+            <p class="lock-desc">Enter the sacred cipher to unlock access to this Cogitator Terminal. Unauthorized access is punishable by servitorization.</p>
+            
+            <div class="lock-input-group">
+                <input type="password" id="gate-pass-input" class="lock-input" placeholder="Enter Imperial Passcode..." autocomplete="off">
+                <button id="gate-unlock-btn" class="lock-btn">AUTHENTICATE</button>
+            </div>
+            
+            <div class="lock-error-msg" id="lock-error-msg"></div>
+            
+            <div class="lock-hint">
+                <span>Default Passcode: <strong>primarch</strong></span>
+                <span style="display:block; margin-top: 4px; font-size: 0.75rem; color: var(--text-muted);">(You can change this password at any time in the header)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-nav-bar" id="mobile-nav-bar">
+        <button class="mobile-tab-btn active" data-tab="mission"><span>📡</span> Mission</button>
+        <button class="mobile-tab-btn" data-tab="dossier"><span>📜</span> Dossier</button>
+        <button class="mobile-tab-btn" data-tab="dice"><span>🎲</span> Dice</button>
+        <button class="mobile-tab-btn" data-tab="gear"><span>🎒</span> Gear</button>
+    </nav>
+
+    <!-- Top Imperial Cogitator Frame -->
+    <header>
+        <div class="header-container">
+            <div class="title-group">
+                <div class="aquila-badge" title="Imperial Inquisitorial Seal">☠</div>
+                <div>
+                    <h1 id="header-title">WARHAMMER 40,000 : ORDO HERETICUS</h1>
+                    <div class="sub-title" id="header-subtitle">TACTICAL D100 COGITATOR TERMINAL // SECTOR 44</div>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <button class="theme-toggle-btn" id="campaign-select-btn" title="Switch Campaign Storyline"><span>📜</span> Campaign: SECTOR 44</button>
+                <button class="audio-btn" id="lock-btn" title="Lock Terminal with Password"><span>🔒</span> Lock</button>
+                <button class="audio-btn" id="change-pass-btn" title="Change Security Password"><span>🔑</span> Set Pass</button>
+                <button class="audio-btn" id="audio-btn" title="Toggle Sound Effects"><span>🔊</span> Sound: ON</button>
+                <button class="audio-btn" id="ambient-btn" title="Toggle Void Engine Hum"><span>⚡</span> Warp Drone: OFF</button>
+                <button class="theme-toggle-btn" id="theme-btn" title="Toggle Universe Module"><span>🦅</span> Universe: WARHAMMER</button>
+                <button class="reset-btn" id="reset-btn" title="Start New Character"><span>↺</span> New Character</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main 3-Column Tactical Display -->
+    <main class="main-wrapper">
+        <!-- Left Column: Character Dossier -->
+        <aside class="gothic-panel character-panel">
+            <div class="panel-header">
+                <h2><span>📜</span> CHARACTER DOSSIER</h2>
+            </div>
+            <div class="character-dossier">
+                <div class="character-badge">
+                    <div class="character-name" id="char-name">Inquisitorial Agent</div>
+                    <div class="character-archetype" id="char-archetype">Purifier of the Unclean</div>
+                    <div class="character-order" id="char-order">Ordo Hereticus</div>
+                </div>
+
+                <!-- Vitals & Gauges -->
+                <div class="vitals-grid">
+                    <div class="vital-box hp">
+                        <div class="vital-label">Wounds</div>
+                        <div class="vital-value"><span id="hp-current">14</span>/<span id="hp-max">14</span></div>
+                        <div class="hp-bar-outer"><div class="hp-bar-inner" id="hp-bar-fill"></div></div>
+                    </div>
+                    <div class="vital-box fate">
+                        <div class="vital-label">Fate Points</div>
+                        <div class="vital-value" id="fate-current">3</div>
+                    </div>
+                    <div class="vital-box insanity">
+                        <div class="vital-label">Insanity</div>
+                        <div class="vital-value" id="insanity-current">0</div>
+                    </div>
+                    <div class="vital-box corruption">
+                        <div class="vital-label">Corruption</div>
+                        <div class="vital-value" id="corruption-current">0</div>
+                    </div>
+                </div>
+
+                <!-- 9 Warhammer Characteristics -->
+                <div class="stat-matrix">
+                    <div class="stat-matrix-title">
+                        <span>Characteristics (D100)</span>
+                        <span>Bonus</span>
+                    </div>
+                    <div class="stat-grid" id="stat-grid">
+                        <!-- Rendered by app.js -->
+                    </div>
+                </div>
+
+                <!-- Armor Values by Body Location -->
+                <div class="armor-locations">
+                    <div class="stat-matrix-title">Armor Soak by Location</div>
+                    <div class="armor-grid" id="armor-grid">
+                        <!-- Rendered by app.js -->
+                    </div>
+                </div>
+
+                <!-- Lieutenants & Companion Devotion (For Lost Primarch Campaign) -->
+                <div class="lieutenants-panel" id="lieutenants-panel" style="display: none;">
+                    <div class="stat-matrix-title">
+                        <span>Legion Lieutenants (Devotion)</span>
+                        <span>Bond</span>
+                    </div>
+                    <div class="lieutenants-list" id="lieutenants-list">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center Column: Mission Cogitator Screen -->
+        <section class="gothic-panel terminal-center">
+            <div class="panel-header">
+                <h2><span>📡</span> TACTICAL SITUATION DISPLAY</h2>
+                <div class="chapter-act" id="chapter-act">Act I</div>
+            </div>
+
+            <div class="terminal-viewport">
+                <div class="chapter-title-banner">
+                    <h3 id="chapter-title">Loading Mission Dossier...</h3>
+                </div>
+
+                <div class="atmosphere-tag" id="atmosphere-text">
+                    Awaiting bio-telemetry feed...
+                </div>
+
+                <!-- Dynamic Narrative Prose -->
+                <div class="narrative-prose" id="narrative-text">
+                    Connecting to Imperial Data-Vault...
+                </div>
+
+                <!-- Combat HUD (Revealed during battle) -->
+                <div class="combat-hud" id="combat-hud" style="display: none;">
+                    <div class="enemy-header">
+                        <span class="enemy-name" id="enemy-name">Heretic Cultist</span>
+                        <span style="font-family: var(--font-terminal); color: #f87171;">
+                            HP: <span id="enemy-hp-current">18</span>/<span id="enemy-hp-max">18</span>
+                        </span>
+                    </div>
+                    <div class="enemy-hp-bar">
+                        <div class="enemy-hp-fill" id="enemy-hp-fill"></div>
+                    </div>
+                    <div class="enemy-quote" id="enemy-quote">"Blood for the Dark Gods!"</div>
+                </div>
+            </div>
+
+            <!-- Action Control Hub -->
+            <div class="action-hub">
+                <div class="hub-title">
+                    <span>⚡</span> SELECT TACTICAL DIRECTIVE OR TYPE CUSTOM ACTION:
+                </div>
+
+                <!-- Tactical Choices -->
+                <div class="options-container" id="options-container">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Freeform Roleplay Input -->
+                <div class="freeform-box">
+                    <div class="freeform-label">
+                        <span>Custom Action Input (Type ANY creative action/tactic)</span>
+                        <span>Evaluated against your Attributes</span>
+                    </div>
+                    <div class="freeform-input-group">
+                        <input 
+                            type="text" 
+                            id="freeform-input" 
+                            class="freeform-input" 
+                            placeholder="e.g., 'I embrace Valerie and unleash a wave of golden plasma from my wrist annihilator...'"
+                            autocomplete="off"
+                        >
+                        <button class="execute-action-btn" id="execute-action-btn">EXECUTE</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Dice Cogitator & Equipment -->
+        <aside class="right-sidebar">
+            <!-- D100 Dice Engine Panel -->
+            <div class="gothic-panel dice-panel">
+                <div class="panel-header">
+                    <h3><span>🎲</span> D100 COGITATOR</h3>
+                </div>
+                <div class="dice-tray">
+                    <div class="dice-result-card">
+                        <div class="dice-label" id="dice-label">Standby</div>
+                        <div class="dice-digits" id="dice-digits">00</div>
+                        <div class="dice-formula" id="dice-formula">Awaiting Action Check</div>
+                        <div class="hit-location-badge" id="hit-location-badge">Hit Location: None</div>
+                        <button class="fate-reroll-btn" id="fate-reroll-btn" style="display: none;">
+                            Spend 1 Fate Point to Reroll
+                        </button>
+                    </div>
+
+                    <div style="font-size: 0.75rem; color: var(--gold-imperial); font-family: var(--font-terminal);">
+                        Recent Cogitations:
+                    </div>
+                    <div class="dice-history-log" id="dice-history">
+                        <!-- History injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Panel -->
+            <div class="gothic-panel inventory-panel-wrap">
+                <div class="panel-header">
+                    <h3><span>🎒</span> GEAR & RELICS</h3>
+                </div>
+                <div class="inventory-panel" id="inventory-list">
+                    <!-- Items rendered by app.js -->
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Character Creation Modal (With Custom Primarch Creator) -->
+    <div class="modal-backdrop" id="creator-modal" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close-btn" id="modal-close-btn" title="Close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: 1px solid var(--border-iron); color: var(--text-muted); font-size: 1.2rem; cursor: pointer; border-radius: 4px; padding: 0.2rem 0.6rem;">✕</button>
+            <h2 class="modal-title">⚔ CHARACTER CREATION ⚔</h2>
+            <p class="modal-sub">Forge your Acolyte or Awaken as the Lost Primarch of the II Legion</p>
+
+            <!-- Mode Tabs -->
+            <div class="creator-tabs">
+                <button class="tab-btn active" id="tab-primarch-btn">👑 FORGE LOST PRIMARCH (CUSTOM)</button>
+                <button class="tab-btn" id="tab-acolyte-btn">📜 STANDARD ACOLYTES</button>
+            </div>
+
+            <!-- TAB 1: CUSTOM PRIMARCH CREATOR -->
+            <div class="creator-tab-view" id="tab-primarch-view">
+                <div class="custom-creator-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="primarch-name">Primarch Name:</label>
+                            <input type="text" id="primarch-name" class="custom-input" value="Aurelia Vespera" placeholder="Enter your name...">
+                        </div>
+                        <div class="form-group">
+                            <label for="primarch-title">Title / Epithet:</label>
+                            <input type="text" id="primarch-title" class="custom-input" value="The Eclipse Sovereign" placeholder="e.g. Sovereign of the Veil">
+                        </div>
+                        <div class="form-group">
+                            <label for="primarch-gender">Gender / Persona:</label>
+                            <select id="primarch-gender" class="custom-input">
+                                <option value="Female Primarch">Female Primarch (Matriarch of the Eclipse)</option>
+                                <option value="Male Primarch">Male Primarch (Lord of the Daughters)</option>
+                                <option value="Custom Demigod">Divine Demigod</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Primarch Aspect / Class -->
+                    <div class="aspect-label">Choose Your Primarch Aspect / Class:</div>
+                    <div class="archetype-grid" id="primarch-class-container">
+                        <!-- Populated by app.js -->
+                    </div>
+
+                    <!-- Stat Allocator -->
+                    <div class="stat-allocator-panel">
+                        <div class="stat-allocator-header">
+                            <span>PRIMARCH ATTRIBUTES (D100)</span>
+                            <div>
+                                <span style="color: var(--amber-vox); margin-right: 0.75rem;">Points Available: <strong id="stat-points-remaining">15</strong></span>
+                                <button type="button" class="roll-stats-btn" id="roll-stats-btn">🎲 Roll Random God-Stats</button>
+                            </div>
+                        </div>
+                        <div class="stat-allocator-grid" id="stat-allocator-grid">
+                            <!-- Populated by app.js -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="margin-top: 1.5rem;">
+                    <button class="initiate-campaign-btn" id="start-primarch-btn">👑 AWAKEN AS THE LOST PRIMARCH</button>
+                </div>
+            </div>
+
+            <!-- TAB 2: STANDARD ACOLYTES PRESETS -->
+            <div class="creator-tab-view" id="tab-acolyte-view" style="display: none;">
+                <div class="archetype-grid" id="archetype-container">
+                    <!-- Populated by app.js -->
+                </div>
+                <div class="modal-actions">
+                    <button class="initiate-campaign-btn" id="start-acolyte-btn">ENTER AS INQUISITORIAL ACOLYTE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="audio.js"></script>
+    <script src="rules.js"></script>
+    <script src="campaign_warhammer.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
