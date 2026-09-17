@@ -62,6 +62,7 @@ class GrimdarkRPGApp {
         this.voxReadBtnEl = document.getElementById('vox-read-btn');
         this.voxPauseBtnEl = document.getElementById('vox-pause-btn');
         this.voxStopBtnEl = document.getElementById('vox-stop-btn');
+        this.voxGenderBtnEl = document.getElementById('vox-gender-btn');
         this.voxAutoToggleEl = document.getElementById('vox-auto-toggle');
         this.voxEqualizerEl = document.getElementById('vox-equalizer');
         this.tacticalSceneFrameEl = document.getElementById('tactical-scene-frame');
@@ -116,12 +117,29 @@ class GrimdarkRPGApp {
         this.ambientBtnEl = document.getElementById('ambient-btn');
         this.resetBtnEl = document.getElementById('reset-btn');
         this.themeBtnEl = document.getElementById('theme-btn');
+        this.saveBtnEl = document.getElementById('save-btn');
     }
 
     bindEvents() {
         this.initSecurityGate();
         this.initMobileNav();
         this.initVoxNarrator();
+
+        if (this.saveBtnEl) {
+            this.saveBtnEl.addEventListener('click', () => {
+                this.saveGame();
+                window.soundEngine.playSuccess();
+                const orig = this.saveBtnEl.innerHTML;
+                this.saveBtnEl.innerHTML = '<span>✔</span> SAVED!';
+                this.saveBtnEl.style.color = '#4ade80';
+                this.saveBtnEl.style.borderColor = '#22c55e';
+                setTimeout(() => {
+                    this.saveBtnEl.innerHTML = orig;
+                    this.saveBtnEl.style.color = '';
+                    this.saveBtnEl.style.borderColor = '';
+                }, 1500);
+            });
+        }
 
         this.executeActionBtnEl.addEventListener('click', () => this.handleFreeformAction());
         this.freeformInputEl.addEventListener('keydown', (e) => {
@@ -1192,6 +1210,20 @@ Crimson eyes gaze into your soul:
         this.isVoxSpeaking = false;
         this.isVoxPaused = false;
         this.autoVox = localStorage.getItem('warhammer_auto_vox') === 'true';
+        this.voxGender = localStorage.getItem('warhammer_vox_gender') || 'female';
+
+        if (this.voxGenderBtnEl) {
+            this.updateVoxGenderUI();
+            this.voxGenderBtnEl.addEventListener('click', () => {
+                this.voxGender = (this.voxGender === 'female') ? 'male' : 'female';
+                localStorage.setItem('warhammer_vox_gender', this.voxGender);
+                this.updateVoxGenderUI();
+                window.soundEngine.playClick();
+                if (this.isVoxSpeaking) {
+                    this.speakCurrentNarrative();
+                }
+            });
+        }
 
         if (this.voxAutoToggleEl) {
             if (this.autoVox) {
@@ -1247,6 +1279,17 @@ Crimson eyes gaze into your soul:
         }
     }
 
+    updateVoxGenderUI() {
+        if (!this.voxGenderBtnEl) return;
+        if (this.voxGender === 'female') {
+            this.voxGenderBtnEl.innerHTML = '<span>♀</span> Voice: FEMALE';
+            this.voxGenderBtnEl.classList.add('active');
+        } else {
+            this.voxGenderBtnEl.innerHTML = '<span>♂</span> Voice: MALE';
+            this.voxGenderBtnEl.classList.remove('active');
+        }
+    }
+
     stopVox() {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
@@ -1296,11 +1339,36 @@ Crimson eyes gaze into your soul:
 
         const speechText = `${node.title}. ${this.cleanTextForSpeech(node.narrative)}`;
         const utterance = new SpeechSynthesisUtterance(speechText);
-        utterance.rate = 0.94;
-        utterance.pitch = 0.88;
 
         const voices = window.speechSynthesis.getVoices();
-        const preferred = voices.find(v => (v.name.includes('David') || v.name.includes('Male') || v.name.includes('Google UK English Male') || v.lang.startsWith('en')));
+        let preferred = null;
+
+        if (this.voxGender === 'female') {
+            utterance.rate = 0.95;
+            utterance.pitch = 1.10; // Clear, commanding female cadence
+            preferred = voices.find(v => {
+                const name = v.name.toLowerCase();
+                return (name.includes('female') || name.includes('zira') || name.includes('samantha') || 
+                        name.includes('victoria') || name.includes('karen') || name.includes('jenny') || 
+                        name.includes('aria') || name.includes('eva') || name.includes('fiona') ||
+                        name.includes('moira') || name.includes('tessa')) && v.lang.startsWith('en');
+            });
+            if (!preferred) {
+                preferred = voices.find(v => v.lang.startsWith('en'));
+            }
+        } else {
+            utterance.rate = 0.94;
+            utterance.pitch = 0.88; // Deep grimdark male baritone
+            preferred = voices.find(v => {
+                const name = v.name.toLowerCase();
+                return (name.includes('male') || name.includes('david') || name.includes('george') || 
+                        name.includes('guy') || name.includes('daniel')) && v.lang.startsWith('en');
+            });
+            if (!preferred) {
+                preferred = voices.find(v => v.lang.startsWith('en'));
+            }
+        }
+
         if (preferred) utterance.voice = preferred;
 
         utterance.onstart = () => {
