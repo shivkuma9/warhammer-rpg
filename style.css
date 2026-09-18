@@ -1548,6 +1548,31 @@ header {
     background: rgba(212, 175, 55, 0.1);
 }
 
+.vox-voice-select {
+    background: #121620;
+    border: 1px solid var(--border-brass-dim);
+    color: var(--gold-bright);
+    font-family: var(--font-terminal);
+    font-size: 0.68rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    max-width: 170px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.vox-voice-select:hover, .vox-voice-select:focus {
+    border-color: var(--gold-imperial);
+    background: #1a202c;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.vox-voice-select option {
+    background: #0d1117;
+    color: #e2e8f0;
+}
+
 /* Tactical Scene Frame / Visual Illustration */
 .tactical-scene-frame {
     margin-bottom: 0.85rem;

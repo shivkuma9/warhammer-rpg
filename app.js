@@ -62,6 +62,7 @@ class GrimdarkRPGApp {
         this.voxReadBtnEl = document.getElementById('vox-read-btn');
         this.voxPauseBtnEl = document.getElementById('vox-pause-btn');
         this.voxStopBtnEl = document.getElementById('vox-stop-btn');
+        this.voxVoiceSelectEl = document.getElementById('vox-voice-select');
         this.voxGenderBtnEl = document.getElementById('vox-gender-btn');
         this.voxAutoToggleEl = document.getElementById('vox-auto-toggle');
         this.voxEqualizerEl = document.getElementById('vox-equalizer');
@@ -1211,6 +1212,24 @@ Crimson eyes gaze into your soul:
         this.isVoxPaused = false;
         this.autoVox = localStorage.getItem('warhammer_auto_vox') === 'true';
         this.voxGender = localStorage.getItem('warhammer_vox_gender') || 'female';
+        this.selectedVoiceName = localStorage.getItem('warhammer_chosen_voice') || '';
+
+        // Populate and listen for voice list updates from the browser
+        if ('speechSynthesis' in window) {
+            this.populateVoiceDropdown();
+            window.speechSynthesis.onvoiceschanged = () => this.populateVoiceDropdown();
+        }
+
+        if (this.voxVoiceSelectEl) {
+            this.voxVoiceSelectEl.addEventListener('change', () => {
+                this.selectedVoiceName = this.voxVoiceSelectEl.value;
+                localStorage.setItem('warhammer_chosen_voice', this.selectedVoiceName);
+                window.soundEngine.playClick();
+                if (this.isVoxSpeaking) {
+                    this.speakCurrentNarrative();
+                }
+            });
+        }
 
         if (this.voxGenderBtnEl) {
             this.updateVoxGenderUI();
@@ -1218,6 +1237,7 @@ Crimson eyes gaze into your soul:
                 this.voxGender = (this.voxGender === 'female') ? 'male' : 'female';
                 localStorage.setItem('warhammer_vox_gender', this.voxGender);
                 this.updateVoxGenderUI();
+                this.populateVoiceDropdown();
                 window.soundEngine.playClick();
                 if (this.isVoxSpeaking) {
                     this.speakCurrentNarrative();
@@ -1279,13 +1299,70 @@ Crimson eyes gaze into your soul:
         }
     }
 
+    populateVoiceDropdown() {
+        if (!('speechSynthesis' in window) || !this.voxVoiceSelectEl) return;
+        const allVoices = window.speechSynthesis.getVoices();
+        if (!allVoices || allVoices.length === 0) return;
+
+        // Filter for English or best available
+        const enVoices = allVoices.filter(v => v.lang.startsWith('en') || v.lang.startsWith('en-'));
+        const voices = enVoices.length > 0 ? enVoices : allVoices;
+
+        // Helper to check if a voice is female
+        const isFemale = (name) => {
+            const n = name.toLowerCase();
+            return n.includes('female') || n.includes('zira') || n.includes('samantha') || 
+                   n.includes('victoria') || n.includes('karen') || n.includes('jenny') || 
+                   n.includes('aria') || n.includes('sonia') || n.includes('libby') || 
+                   n.includes('maisie') || n.includes('hazel') || n.includes('susan') || 
+                   n.includes('catherine') || n.includes('fiona') || n.includes('moira') || 
+                   n.includes('tessa') || n.includes('eva') || (n.includes('natural') && (n.includes('uk') || n.includes('us')));
+        };
+
+        const isNatural = (name) => {
+            const n = name.toLowerCase();
+            return n.includes('natural') || n.includes('neural') || n.includes('online') || n.includes('enhanced') || n.includes('premium') || n.includes('google');
+        };
+
+        // Sort: Natural voices first, matching current gender choice
+        const sorted = [...voices].sort((a, b) => {
+            const aNat = isNatural(a.name) ? 2 : 0;
+            const bNat = isNatural(b.name) ? 2 : 0;
+            const aGender = (this.voxGender === 'female' && isFemale(a.name)) || (this.voxGender === 'male' && !isFemale(a.name)) ? 1 : 0;
+            const bGender = (this.voxGender === 'female' && isFemale(b.name)) || (this.voxGender === 'male' && !isFemale(b.name)) ? 1 : 0;
+            return (bNat + bGender) - (aNat + aGender);
+        });
+
+        this.voxVoiceSelectEl.innerHTML = '';
+        let foundChosen = false;
+
+        sorted.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.name;
+            const femaleTag = isFemale(v.name) ? '♀' : '♂';
+            const natTag = isNatural(v.name) ? '⭐ ' : '';
+            opt.textContent = `${natTag}${v.name} (${femaleTag} ${v.lang})`;
+            if (this.selectedVoiceName && v.name === this.selectedVoiceName) {
+                opt.selected = true;
+                foundChosen = true;
+            }
+            this.voxVoiceSelectEl.appendChild(opt);
+        });
+
+        // If no user choice or previous choice not present, default to the top-ranked Natural voice
+        if (!foundChosen && sorted.length > 0) {
+            this.selectedVoiceName = sorted[0].name;
+            this.voxVoiceSelectEl.value = this.selectedVoiceName;
+        }
+    }
+
     updateVoxGenderUI() {
         if (!this.voxGenderBtnEl) return;
         if (this.voxGender === 'female') {
-            this.voxGenderBtnEl.innerHTML = '<span>♀</span> Voice: FEMALE';
+            this.voxGenderBtnEl.innerHTML = '<span>♀</span> Female';
             this.voxGenderBtnEl.classList.add('active');
         } else {
-            this.voxGenderBtnEl.innerHTML = '<span>♂</span> Voice: MALE';
+            this.voxGenderBtnEl.innerHTML = '<span>♂</span> Male';
             this.voxGenderBtnEl.classList.remove('active');
         }
     }
@@ -1327,6 +1404,8 @@ Crimson eyes gaze into your soul:
             .replace(/\([A-Za-z0-9\+\-\s\.]+\)/g, '')
             .replace(/[*_#`~]/g, '')
             .replace(/["""]/g, '')
+            .replace(/\n\s*\n/g, '. ')
+            .replace(/\n/g, ' ')
             .trim();
     }
 
@@ -1343,33 +1422,53 @@ Crimson eyes gaze into your soul:
         const voices = window.speechSynthesis.getVoices();
         let preferred = null;
 
-        if (this.voxGender === 'female') {
-            utterance.rate = 0.95;
-            utterance.pitch = 1.10; // Clear, commanding female cadence
-            preferred = voices.find(v => {
-                const name = v.name.toLowerCase();
-                return (name.includes('female') || name.includes('zira') || name.includes('samantha') || 
-                        name.includes('victoria') || name.includes('karen') || name.includes('jenny') || 
-                        name.includes('aria') || name.includes('eva') || name.includes('fiona') ||
-                        name.includes('moira') || name.includes('tessa')) && v.lang.startsWith('en');
-            });
-            if (!preferred) {
-                preferred = voices.find(v => v.lang.startsWith('en'));
+        // 1. Check if user picked a specific voice from the dropdown
+        if (this.selectedVoiceName && voices && voices.length > 0) {
+            preferred = voices.find(v => v.name === this.selectedVoiceName);
+        }
+
+        // 2. Fallback: Find highest-rated natural voice for selected gender
+        if (!preferred && voices && voices.length > 0) {
+            if (this.voxGender === 'female') {
+                preferred = voices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return (n.includes('natural') || n.includes('neural') || n.includes('online') || n.includes('enhanced')) &&
+                           (n.includes('female') || n.includes('sonia') || n.includes('jenny') || n.includes('libby') || n.includes('aria') || n.includes('samantha'));
+                }) || voices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return n.includes('female') || n.includes('zira') || n.includes('samantha') || n.includes('karen') || n.includes('victoria');
+                });
+            } else {
+                preferred = voices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return (n.includes('natural') || n.includes('neural') || n.includes('online')) &&
+                           (n.includes('male') || n.includes('ryan') || n.includes('guy') || n.includes('david'));
+                }) || voices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return n.includes('male') || n.includes('david') || n.includes('george') || n.includes('daniel');
+                });
             }
-        } else {
-            utterance.rate = 0.94;
-            utterance.pitch = 0.88; // Deep grimdark male baritone
-            preferred = voices.find(v => {
-                const name = v.name.toLowerCase();
-                return (name.includes('male') || name.includes('david') || name.includes('george') || 
-                        name.includes('guy') || name.includes('daniel')) && v.lang.startsWith('en');
-            });
+
             if (!preferred) {
-                preferred = voices.find(v => v.lang.startsWith('en'));
+                preferred = voices.find(v => v.lang.startsWith('en')) || voices[0];
             }
         }
 
-        if (preferred) utterance.voice = preferred;
+        if (preferred) {
+            utterance.voice = preferred;
+            const isNat = preferred.name.toLowerCase().includes('natural') || preferred.name.toLowerCase().includes('neural') || preferred.name.toLowerCase().includes('online');
+            // Natural voices already have built-in realistic pitch; older desktop voices need slight boost
+            if (this.voxGender === 'female') {
+                utterance.pitch = isNat ? 1.0 : 1.10;
+                utterance.rate = isNat ? 0.98 : 0.94;
+            } else {
+                utterance.pitch = isNat ? 1.0 : 0.88;
+                utterance.rate = isNat ? 0.96 : 0.92;
+            }
+        } else {
+            utterance.pitch = this.voxGender === 'female' ? 1.10 : 0.88;
+            utterance.rate = 0.94;
+        }
 
         utterance.onstart = () => {
             this.isVoxSpeaking = true;
