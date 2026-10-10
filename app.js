@@ -481,7 +481,18 @@ class GrimdarkRPGApp {
                 console.error("Failed to load saved state:", e);
             }
         }
-        this.showCharacterCreator();
+
+        // If no save exists yet, initialize directly into Warhammer 40k campaign!
+        this.universe = 'warhammer';
+        this.campaignId = 'lost_primarch';
+        this.currentCampaign = WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN;
+        this.character = this.createDefaultPrimarch();
+        this.currentNode = 'lp_ch1_awakening';
+        this.currentCombat = null;
+        this.diceHistory = [];
+        this.updateHeaderTitles();
+        this.renderAll();
+        this.saveGame();
     }
 
     saveGame() {
@@ -1598,6 +1609,28 @@ class GrimdarkRPGApp {
         this.switchUniverse(nextUniverse);
     }
 
+    createDefaultPrimarch() {
+        const aspect = WarhammerCampaignData.PRIMARCH_CLASSES[0];
+        return {
+            id: 'custom_primarch',
+            name: 'Aurelia Vespera',
+            title: 'The Eclipse Sovereign',
+            gender: 'Female Primarch',
+            order: 'The II Legion: Daughters of the Eclipse',
+            isPrimarch: true,
+            funds: 1200,
+            stats: JSON.parse(JSON.stringify(aspect.baseStats)),
+            woundsMax: aspect.woundsMax,
+            woundsCurrent: aspect.woundsMax,
+            fatePoints: aspect.fatePoints,
+            insanity: 0,
+            corruption: 0,
+            armor: JSON.parse(JSON.stringify(aspect.armor)),
+            inventory: JSON.parse(JSON.stringify(aspect.startingGear)),
+            lieutenants: JSON.parse(JSON.stringify(WarhammerCampaignData.LIEUTENANTS))
+        };
+    }
+
     switchUniverse(uni) {
         this.universe = uni;
         window.soundEngine.playSuccess();
@@ -1705,8 +1738,6 @@ class GrimdarkRPGApp {
                 this.lockErrorMsgEl.textContent = '';
                 this.gatePassInputEl.value = '';
                 this.lockGateBackdropEl.style.display = 'none';
-                // Show Realm Hub Start Menu on unlock so player can choose their realm!
-                this.showRealmHub();
             } else {
                 window.soundEngine.playFailure();
                 this.lockErrorMsgEl.textContent = '☠ ACCESS DENIED // INVALID CLEARANCE CIPHER';
