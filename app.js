@@ -1305,6 +1305,8 @@ class GrimdarkRPGApp {
                 this.lockErrorMsgEl.textContent = '';
                 this.gatePassInputEl.value = '';
                 this.lockGateBackdropEl.style.display = 'none';
+                // Show Realm Hub Start Menu on unlock so player can choose their realm!
+                this.showRealmHub();
             } else {
                 window.soundEngine.playFailure();
                 this.lockErrorMsgEl.textContent = '☠ ACCESS DENIED // INVALID CLEARANCE CIPHER';
@@ -1312,6 +1314,13 @@ class GrimdarkRPGApp {
                 this.gatePassInputEl.focus();
             }
         };
+
+        const hubCloseBtn = document.getElementById('realm-hub-close-btn');
+        if (hubCloseBtn) {
+            hubCloseBtn.addEventListener('click', () => {
+                if (this.universeMenuBackdropEl) this.universeMenuBackdropEl.style.display = 'none';
+            });
+        }
 
         this.gateUnlockBtnEl.addEventListener('click', handleAuth);
         this.gatePassInputEl.addEventListener('keydown', (e) => {
