@@ -763,6 +763,15 @@ You stand tall among the smoke, an Inquisitorial legend.`
                 title: 'Act I: Awakening of the Forgotten Demigod',
                 act: 'Act I - The Unsealing',
                 atmosphere: 'Hissing coolant steam, emerald stasis fluid draining, heavy armored footsteps, scent of sacred myrrh and blood.',
+                illustration: {
+                    title: 'Awakening of the Lost Primarch',
+                    badge: 'SANCTUM PROTOCOL',
+                    badgeClass: 'threat-sanctum',
+                    icon: '👑',
+                    image: 'assets/selene_portrait.jpg',
+                    quote: '"My Primarch... My Sovereign... your daughters have kept the faith."',
+                    tags: ['Valkyrie Devotion', 'Second Legion', 'Lost Primarch']
+                },
                 narrative: `For ten thousand years, you slept in suspended animation within the Adamantine Vault of the Outer Veil. 
 
 With a deafening hydraulic hiss, the heavy reinforced stasis seals disengage. Freezing amniotic gel drains away, and your eyes snap open. Godlike senses flood your mind—the sound of plasma engines, the hum of power fields, and the faint, sweet scent of burning incense.
