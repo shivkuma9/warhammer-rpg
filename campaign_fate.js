@@ -164,6 +164,17 @@ As the smoke clears, a figure stands atop the altar, moonlight gleaming off poli
                         desc: 'Open your magic circuits completely, establishing intimate prana circulation.',
                         successNode: 'fate_ch1_pact_intimate',
                         failNode: 'fate_ch1_pact_cautious'
+                    },
+                    {
+                        approach: 'force',
+                        tag: '⛓️ SHINJI DOMINANCE',
+                        label: '[Shinji Special] Brandish the Book of the False Attendant and demand absolute submission!',
+                        stat: 'lck',
+                        modifier: +20,
+                        actionType: 'check',
+                        desc: 'Assert supreme authority over the summoned Servant, forcing immediate obedience or servitude.',
+                        successNode: 'fate_ch1_pact_shinji',
+                        failNode: 'fate_ch1_pact_cautious'
                     }
                 ]
             },
@@ -312,6 +323,47 @@ Before the embrace can linger, thunderous sonic booms split the night air over F
                         approach: 'finesse',
                         tag: '🗡️ FINESSE',
                         label: 'Take to the shadows with heightened synchronization and flank the harbor',
+                        actionType: 'advance',
+                        nextNode: 'fate_ch2_bridge_recon'
+                    }
+                ]
+            },
+
+            // Branch 4: Shinji Subjugation Pact
+            {
+                id: 'fate_ch1_pact_shinji',
+                title: 'The Grimoire of Chains',
+                act: 'Act I - Forced Subjugation & Thrall Binding',
+                atmosphere: 'Smell of old parchment and wormwood, dark violet glyphs wrapping around the altar, cruel triumphant laughter.',
+                illustration: {
+                    title: 'Shinji\'s Enslavement Ritual',
+                    badge: 'SUBJUGATION COMPLETE',
+                    badgeClass: 'threat-extreme',
+                    icon: '⛓️',
+                    quote: '"Look at you, proud Heroic Spirit! Under my False Tome, your pride belongs to Shinji Matou!"',
+                    tags: ['Thrall Bound', 'Obedience Surge', 'Matou Bloodline']
+                },
+                narrative: `You sneer with arrogant relish, thrusting the glowing pages of the Book of the False Attendant into the air! 
+
+Dark Matou runes leap from the parchment like barbed iron chains, lashing tight around your Servant's armored wrists and throat. The spirit recoils with a sharp gasp, their divine authority momentarily shackled by the stolen Command Spells!
+
+"W-What is this foul sorcery?!" they grit their teeth, emerald eyes burning with humiliated defiance as the mystical bindings force them down to one knee before you.
+
+You step forward, lifting their chin with the tip of your bow: "Don't get cocky, Servant! I hold the command seals. In the Matou household, you obey my every whim—whether in battle or in my private chambers!" (+35 Obedience / Subjugated Thrall Status Activated!)
+
+Before you can break their defiance further, a furious seismic tremor shakes the floor. Berserker and his master have launched a brutal assault on the docks!`,
+                options: [
+                    {
+                        approach: 'force',
+                        tag: '⛓️ COMPEL',
+                        label: 'Use the False Tome to command your thrall Servant to crush the intruders',
+                        actionType: 'advance',
+                        nextNode: 'fate_ch2_harbor_skirmish'
+                    },
+                    {
+                        approach: 'mind',
+                        tag: '🧠 AMBUSH',
+                        label: 'Force your thrall to act as bait while you snipe the enemy Master from the shadows',
                         actionType: 'advance',
                         nextNode: 'fate_ch2_bridge_recon'
                     }
@@ -488,6 +540,13 @@ They lean in, their forehead resting tenderly against yours, warm breath minglin
                         label: 'Vow upon your Command Seals to conquer every remaining Master together',
                         actionType: 'advance',
                         nextNode: 'fate_epilogue_conquerors'
+                    },
+                    {
+                        approach: 'mystery',
+                        tag: '⛓️ SHINJI HAREM',
+                        label: '[Shinji Ending] Claim your vanquished rivals and bind both Saber and Rider into your personal Harem!',
+                        actionType: 'advance',
+                        nextNode: 'fate_epilogue_shinji_harem'
                     }
                 ]
             },
@@ -536,6 +595,33 @@ Together, hand in hand, you step into the dawn of a peaceful world.`
 The Greater Grail recognizes your supreme authority. You claim the omnipotent wish-granting relic, cementing your legacy as the greatest Master the Clock Tower has ever witnessed.
 
 Your Servant stands proudly at your right hand, sword drawn in salute: "Our victory is absolute, Master. Wherever you lead, my blade shall conquer!"`
+            },
+
+            // Epilogue 3: Shinji's Ultimate Harem & Thrall Dominion
+            {
+                id: 'fate_epilogue_shinji_harem',
+                title: '★ EPILOGUE: SHINJI MATOU\'S SUPREME HAREM ★',
+                act: 'Grand Finale - Master of Servants & Thralls',
+                atmosphere: 'Luxurious Matou manor chambers, scent of expensive wine and burning rosewood, Servants attending your every desire.',
+                illustration: {
+                    title: 'The Matou Lordship',
+                    badge: 'HAREM DOMINION',
+                    badgeClass: 'threat-sanctum',
+                    icon: '👑',
+                    quote: '"Hahaha! The entire Grail War bowed before me! Saber, Rider... pour your Master another goblet!"',
+                    tags: ['Shinji Ascendant', 'Harem Master', 'Subjugated Servants', 'Total Victory']
+                },
+                narrative: `The Fifth Holy Grail War has concluded in a manner none could have foreseen: Shinji Matou stands atop the world as the undisputed Sovereign of Fuyuki!
+
+Within the opulent, dimly lit master chambers of the renovated Matou estate, you recline upon a velvet divan, sipping vintage Bordeaux from a golden chalice.
+
+At your feet kneels Rider Medusa, her petrifying eyes softened with total obedience as she gently rests her head against your knee, her slender fingers tracing the cuffs of your silk tunic: "The war is over, Master Shinji. Your authority is absolute... I exist only to please you."
+
+Across the chamber, Artoria Pendragon—her armor replaced by a flowing indigo silk gown—steps forward, holding a silver tray laden with delicacies. Her proud cheeks flush with warm devotion as she offers you a toast:
+
+"I once fought for chivalry and forgotten kings, Master Shinji. But under your commands, I have discovered a power far sweeter than the throne of Britain. As your sworn consort, my blade and my devotion are yours for all eternity."
+
+With the Greater Grail under your control, rival magi cower at your name, while the most beautiful Heroic Spirits in history attend to your every command day and night. You throw your head back and laugh—you are no longer the forgotten heir, but the supreme Lord of the Holy Grail!`
             }
         ]
     }
