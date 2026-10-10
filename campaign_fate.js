@@ -9,8 +9,8 @@ const FateCampaignData = {
     MASTERS: [
         {
             id: 'magus_reinforcement',
-            name: 'Spellcaster of the Enzankyo Line',
-            order: 'Clock Tower Initiate',
+            name: 'Shirou / Standard Magus',
+            order: 'Chaldea / Clock Tower',
             title: 'Master of Reinforcement & Structural Grasp',
             quote: '"I need no grand lineage. Through structural analysis and sharp blades, I will claim the Grail."',
             stats: { str: 45, end: 48, agi: 52, mana: 68, lck: 55, np: 70 },
@@ -26,6 +26,27 @@ const FateCampaignData = {
             abilities: [
                 { name: 'Structural Grasp', desc: '+15 to Mana tests when analyzing opposing Noble Phantasms or traps.' },
                 { name: 'Command Spell Surge', desc: 'Can spend 1 Command Spell to guarantee an instant critical miracle or evade death.' }
+            ]
+        },
+        {
+            id: 'shinji_matou',
+            name: 'Shinji Matou',
+            order: 'Matou Family Heir',
+            title: 'Master of the False Command Tome & Rider Thralls',
+            quote: '"Look at me! I am the true master here. Medusa and Saber belong to my command!"',
+            stats: { str: 32, end: 35, agi: 45, mana: 50, lck: 65, np: 75 },
+            woundsMax: 16,
+            commandSpells: 3,
+            manaCurrent: 85,
+            manaMax: 100,
+            inventory: [
+                { id: 'f_w3', name: 'Book of the False Attendant', type: 'relic', damage: '1d10+4', pen: 2, qualities: ['Command Enslavement'], desc: 'Grimoire crafted from parchment inscribed with stolen command spells, forcing obedience upon Servants.' },
+                { id: 'f_w4', name: 'Archery Longbow & Poisoned Arrows', type: 'ranged', damage: '1d10+5', pen: 3, qualities: ['Toxin'], desc: 'Modern composite bow coated in Matou crest-worm venoms.' },
+                { id: 'f_i2', name: 'Matou Crest Worm Vial', type: 'consumable', count: 2, heals: 6, desc: 'Parasitic worms that stimulate magic circuits in exchange for agonizing pain.' }
+            ],
+            abilities: [
+                { name: 'Cruel Command', desc: '+20 to Obedience checks when breaking captured enemy Servants and Masters.' },
+                { name: 'Arrogant Survival', desc: 'When reduced to 0 wounds, has a 50% chance to flee with 1 HP remaining.' }
             ]
         }
     ],
@@ -83,6 +104,7 @@ const FateCampaignData = {
                     badge: 'RITUAL ACTIVE',
                     badgeClass: 'threat-sanctum',
                     icon: '🗡️',
+                    image: 'assets/saber_portrait.jpg',
                     quote: '"Silver and iron to the origin. Gem and the archduke of contracts to the cornerstone."',
                     tags: ['Magic Circuits', 'Command Seals', 'Holy Grail War', 'Heroic Spirit']
                 },

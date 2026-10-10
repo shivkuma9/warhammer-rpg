@@ -68,6 +68,7 @@ const OnePieceCampaignData = {
                     badge: 'GRAND LINE ENTRY',
                     badgeClass: 'threat-moderate',
                     icon: '🏴‍☠️',
+                    image: 'assets/onepiece_ship.jpg',
                     quote: '"Ride the upward current! The world is waiting for our name!"',
                     tags: ['Reverse Mountain', 'Grand Line', 'Sea Kings', 'Supernova']
                 },
