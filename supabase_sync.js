@@ -5,8 +5,8 @@ class CloudDatabaseManager {
     constructor() {
         this.client = null;
         this.syncEnabled = false;
-        this.projectUrl = localStorage.getItem('omni_supabase_url') || '';
-        this.anonKey = localStorage.getItem('omni_supabase_key') || '';
+        this.projectUrl = localStorage.getItem('omni_supabase_url') || 'https://oypditgycjwvcuuoxmdx.supabase.co';
+        this.anonKey = localStorage.getItem('omni_supabase_key') || 'sb_publishable_byF1Pa8CaxzO4nqbaic5Lw_n4dwAyhv';
         this.playerId = localStorage.getItem('omni_cloud_player_id') || this.generatePlayerId();
 
         this.initClient();
