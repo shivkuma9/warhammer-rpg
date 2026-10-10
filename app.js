@@ -10,7 +10,7 @@ class GrimdarkRPGApp {
         this.currentCombat = null;
         this.lastRoll = null;
         this.diceHistory = [];
-        this.universe = 'warhammer'; // 'warhammer' or 'fate'
+        this.universe = localStorage.getItem('omni_active_universe') || 'warhammer';
 
         // Primarch Creator State
         this.primarchPointsRemaining = 15;
@@ -417,10 +417,10 @@ class GrimdarkRPGApp {
             });
         }
 
-        // Realm Hub Select buttons
-        document.querySelectorAll('.select-realm-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const realm = e.currentTarget.dataset.realm || 'warhammer';
+        // Realm Hub Select buttons & cards
+        document.querySelectorAll('.realm-card, .select-realm-btn').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const realm = el.dataset.realm || el.closest('.realm-card')?.dataset.realm || 'warhammer';
                 this.switchUniverse(realm);
                 if (this.universeMenuBackdropEl) this.universeMenuBackdropEl.style.display = 'none';
             });
@@ -482,12 +482,32 @@ class GrimdarkRPGApp {
             }
         }
 
-        // If no save exists yet, initialize directly into Warhammer 40k campaign!
-        this.universe = 'warhammer';
-        this.campaignId = 'lost_primarch';
-        this.currentCampaign = WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN;
-        this.character = this.createDefaultPrimarch();
-        this.currentNode = 'lp_ch1_awakening';
+        // If no save exists yet for chosen realm, initialize clean default character for that realm
+        if (uniKey === 'fate') {
+            this.universe = 'fate';
+            this.campaignId = 'fate_fuyuki_war';
+            this.currentCampaign = FateCampaignData.CAMPAIGN;
+            this.character = JSON.parse(JSON.stringify(FateCampaignData.MASTERS[0]));
+            this.character.isFate = true;
+            this.character.funds = 800;
+            this.character.servant = FateCampaignData.SERVANTS[0];
+            this.currentNode = 'fate_ch1_summoning';
+        } else if (uniKey === 'onepiece') {
+            this.universe = 'onepiece';
+            this.campaignId = 'onepiece_grand_line';
+            this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
+            this.character = JSON.parse(JSON.stringify(OnePieceCampaignData.CAPTAINS[0]));
+            this.character.isOnePiece = true;
+            this.character.funds = 1500;
+            this.character.crew = OnePieceCampaignData.CREW_OFFICERS;
+            this.currentNode = 'op_ch1_reverse_mountain';
+        } else {
+            this.universe = 'warhammer';
+            this.campaignId = 'lost_primarch';
+            this.currentCampaign = WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN;
+            this.character = this.createDefaultPrimarch();
+            this.currentNode = 'lp_ch1_awakening';
+        }
         this.currentCombat = null;
         this.diceHistory = [];
         this.updateHeaderTitles();
@@ -497,6 +517,7 @@ class GrimdarkRPGApp {
 
     saveGame() {
         const uniKey = this.universe || 'warhammer';
+        localStorage.setItem('omni_active_universe', uniKey);
         const data = {
             universe: uniKey,
             character: this.character,
@@ -1633,6 +1654,7 @@ class GrimdarkRPGApp {
 
     switchUniverse(uni) {
         this.universe = uni;
+        localStorage.setItem('omni_active_universe', uni);
         window.soundEngine.playSuccess();
 
         // Update body theme classes
