@@ -2,22 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Warhammer 40,000 & Mythic RPG Engine - Tactical D100 Grimdark Tabletop Campaign with Interactive Mechanics, Freeform Roleplay Input, and Audio Ambience">
-    <title>WARHAMMER 40K: INQUISITORIAL COGITATOR & LOST PRIMARCH RPG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Omni-Realm RPG: Grimdark Warhammer 40k, Fate Holy Grail War & Grand Line One Piece Tabletop Campaigns with Companions, Female Voices, and Deep Story.">
+    <title>OMNI-REALM RPG: Warhammer 40K • Fate/Stay • One Piece</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Universal Universe Selection Start Menu -->
+    <div class="universe-menu-backdrop" id="universe-menu-backdrop" style="display: none;">
+        <div class="universe-menu-box">
+            <div class="realm-emblem">🌌</div>
+            <h1 class="universe-menu-title">SELECT YOUR CAMPAIGN REALM</h1>
+            <p class="universe-menu-sub">Choose your world to awaken custom companions, unique rule engines, and branching epic storylines.</p>
+            
+            <div class="realm-cards-grid">
+                <!-- Warhammer 40K Card -->
+                <div class="realm-card" data-realm="warhammer" id="realm-card-warhammer">
+                    <div class="realm-banner-icon">🦅</div>
+                    <div class="realm-badge">GRIMDARK D100</div>
+                    <h3>WARHAMMER 40,000</h3>
+                    <p class="realm-desc">Inquisitorial purges, Warp terrors, Sororitas battle sisters, heretics, and the Awakening of the Lost II Primarch.</p>
+                    <div class="realm-features">
+                        <span>☠️ Insanity & Warp</span>
+                        <span>⚔️ Battle Sisters</span>
+                        <span>⛓️ Servitor Thralls</span>
+                    </div>
+                    <button class="select-realm-btn" data-realm="warhammer">ENTER THE 41ST MILLENNIUM</button>
+                </div>
+
+                <!-- Fate/Stay Night Card -->
+                <div class="realm-card" data-realm="fate" id="realm-card-fate">
+                    <div class="realm-banner-icon">⚔️</div>
+                    <div class="realm-badge">CHALDEA / FUYUKI</div>
+                    <h3>FATE / STAY NIGHT</h3>
+                    <p class="realm-desc">Holy Grail War summoning! Command legendary Heroic Spirits, release Noble Phantasms, and form deep bonds with your Servant.</p>
+                    <div class="realm-features">
+                        <span>✨ Noble Phantasms</span>
+                        <span>❤️ Servant Bond/Harem</span>
+                        <span>🔮 Command Seals</span>
+                    </div>
+                    <button class="select-realm-btn" data-realm="fate">SUMMON SERVANT IN FUYUKI</button>
+                </div>
+
+                <!-- One Piece Card -->
+                <div class="realm-card" data-realm="onepiece" id="realm-card-onepiece">
+                    <div class="realm-banner-icon">🏴‍☠️</div>
+                    <div class="realm-badge">GRAND LINE HAKI</div>
+                    <h3>ONE PIECE SAGA</h3>
+                    <p class="realm-desc">Sail the Grand Line, unlock Armament and Conqueror's Haki, recruit pirate navigators and warriors, and capture Marine foes.</p>
+                    <div class="realm-features">
+                        <span>⚡ Haki & Fruit Clashes</span>
+                        <span>🌊 Pirate Crew Bonds</span>
+                        <span>🏴‍☠️ Marine Captives</span>
+                    </div>
+                    <button class="select-realm-btn" data-realm="onepiece">SET SAIL FOR THE GRAND LINE</button>
+                </div>
+            </div>
+
+            <div class="menu-footer-notes">
+                <span>🔄 You can switch realms anytime from the top bar</span>
+                <span>🎧 Voice Narration with Dedicated Female NPC Tones Supported</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Inquisitorial Security Clearance Lock Gate -->
     <div class="lock-gate-backdrop" id="lock-gate-backdrop" style="display: flex;">
         <div class="lock-gate-box">
             <div class="lock-aquila">☠</div>
             <h2 class="lock-title">INQUISITORIAL SECURITY CLEARANCE</h2>
-            <div class="lock-subtitle">LEVEL VERMILLION // CLASSIFIED PRIMARCH ARCHIVES</div>
-            <p class="lock-desc">Enter the sacred cipher to unlock access to this Cogitator Terminal. Unauthorized access is punishable by servitorization.</p>
+            <div class="lock-subtitle">LEVEL VERMILLION // CLASSIFIED REALM ARCHIVES</div>
+            <p class="lock-desc">Enter the sacred cipher to unlock access to the RPG Terminal. Master passcode: <strong style="color:var(--gold-imperial);">shiva123</strong></p>
             
             <div class="lock-input-group">
-                <input type="password" id="gate-pass-input" class="lock-input" placeholder="Enter Imperial Passcode..." autocomplete="off">
+                <input type="password" id="gate-pass-input" class="lock-input" placeholder="Enter Passcode (shiva123)..." autocomplete="off">
                 <button id="gate-unlock-btn" class="lock-btn">AUTHENTICATE</button>
             </div>
             
@@ -31,10 +90,11 @@
 
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-nav-bar" id="mobile-nav-bar">
-        <button class="mobile-tab-btn active" data-tab="mission"><span>📡</span> Mission</button>
-        <button class="mobile-tab-btn" data-tab="dossier"><span>📜</span> Dossier</button>
+        <button class="mobile-tab-btn active" data-tab="mission"><span>📡</span> Story</button>
+        <button class="mobile-tab-btn" data-tab="dossier"><span>📜</span> Hero</button>
+        <button class="mobile-tab-btn" data-tab="companions"><span>👥</span> Crew</button>
         <button class="mobile-tab-btn" data-tab="dice"><span>🎲</span> Dice</button>
-        <button class="mobile-tab-btn" data-tab="gear"><span>🎒</span> Gear</button>
+        <button class="mobile-tab-btn" data-tab="gear"><span>🎒</span> Bag</button>
     </nav>
 
     <!-- Top Imperial Cogitator Frame -->
@@ -49,6 +109,8 @@
             </div>
 
             <div class="header-controls">
+                <button class="theme-toggle-btn" id="realm-hub-btn" title="Choose Realm World (Warhammer, Fate, One Piece)"><span>🌌</span> Realm Hub</button>
+                <button class="theme-toggle-btn" id="companions-modal-btn" title="View Companions, Bonds, Thralls & Captives"><span>👥</span> Crew / Harem (<span id="companion-count-badge">0</span>)</button>
                 <button class="theme-toggle-btn" id="campaign-select-btn" title="Switch Campaign Storyline"><span>📜</span> Campaign: SECTOR 44</button>
                 <button class="audio-btn" id="lock-btn" title="Lock Terminal with Password"><span>🔒</span> Lock</button>
                 <button class="audio-btn" id="change-pass-btn" title="Change Security Password"><span>🔑</span> Set Pass</button>
@@ -311,6 +373,28 @@
                 <div class="modal-actions">
                     <button class="initiate-campaign-btn" id="start-acolyte-btn">ENTER AS INQUISITORIAL ACOLYTE</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Companions, Harem, Thralls & Captives Modal -->
+    <div class="modal-backdrop" id="companions-modal" style="display: none;">
+        <div class="modal-content companions-modal-content">
+            <button class="modal-close-btn" id="companions-close-btn" title="Close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: 1px solid var(--border-iron); color: var(--text-muted); font-size: 1.2rem; cursor: pointer; border-radius: 4px; padding: 0.2rem 0.6rem;">✕</button>
+            <h2 class="modal-title">👥 COMPANIONS, BONDS & CAPTIVES 👥</h2>
+            <p class="modal-sub">Manage your allies, romantic partners, subjugated thralls, and imprisoned foes across the realms.</p>
+
+            <!-- Companions Filter Tabs -->
+            <div class="creator-tabs">
+                <button class="tab-btn active" id="filter-all-btn">ALL (<span id="count-all">0</span>)</button>
+                <button class="tab-btn" id="filter-allies-btn">⚔️ ALLIES & ROMANCE (<span id="count-allies">0</span>)</button>
+                <button class="tab-btn" id="filter-thralls-btn">⛓️ THRALLS & SLAVES (<span id="count-thralls">0</span>)</button>
+                <button class="tab-btn" id="filter-captives-btn">🔒 PRISONERS & ENEMIES (<span id="count-captives">0</span>)</button>
+            </div>
+
+            <!-- Active Companion Roster Grid -->
+            <div class="companions-grid" id="companions-grid">
+                <!-- Injected dynamically by app.js -->
             </div>
         </div>
     </div>

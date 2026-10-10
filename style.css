@@ -1838,5 +1838,354 @@ body.theme-onepiece .aquila-badge {
     text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
 }
 
+/* =========================================================
+   UNIVERSAL UNIVERSE SELECTION START MENU
+   ========================================================= */
+.universe-menu-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(4, 5, 8, 0.96);
+    backdrop-filter: blur(12px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.universe-menu-box {
+    background: linear-gradient(180deg, #121622 0%, #0a0d14 100%);
+    border: 2px solid var(--border-brass);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), var(--shadow-gold);
+    max-width: 1100px;
+    width: 100%;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    max-height: 94vh;
+    overflow-y: auto;
+}
+
+.realm-emblem {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+.universe-menu-title {
+    font-family: var(--font-title);
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    color: var(--gold-imperial);
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+    margin-bottom: 0.5rem;
+}
+
+.universe-menu-sub {
+    font-family: var(--font-tactical);
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+}
+
+.realm-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.realm-card {
+    background: rgba(16, 21, 31, 0.85);
+    border: 1px solid var(--border-iron);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.realm-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold-imperial);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.realm-banner-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.75rem;
+}
+
+.realm-badge {
+    font-family: var(--font-terminal);
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    color: var(--amber-vox);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+}
+
+.realm-card h3 {
+    font-family: var(--font-title);
+    font-size: 1.3rem;
+    color: var(--text-highlight);
+    margin-bottom: 0.6rem;
+}
+
+.realm-desc {
+    font-size: 0.9rem;
+    color: var(--text-parchment);
+    line-height: 1.45;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+}
+
+.realm-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.realm-features span {
+    font-size: 0.72rem;
+    font-family: var(--font-terminal);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    color: var(--text-muted);
+}
+
+.select-realm-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(180deg, #2a3547 0%, #171f2c 100%);
+    border: 1px solid var(--border-brass);
+    color: var(--gold-imperial);
+    font-family: var(--font-tactical);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.select-realm-btn:hover {
+    background: linear-gradient(180deg, #b8860b 0%, #8b6508 100%);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.menu-footer-notes {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    font-family: var(--font-terminal);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* =========================================================
+   COMPANIONS, BONDS, HAREM & CAPTIVES MODAL & CARDS
+   ========================================================= */
+.companions-modal-content {
+    max-width: 950px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.companions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1.2rem;
+}
+
+.companion-card {
+    background: rgba(14, 18, 26, 0.9);
+    border: 1px solid var(--border-iron);
+    border-radius: var(--radius-md);
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    transition: border-color 0.2s ease;
+}
+
+.companion-card:hover {
+    border-color: var(--gold-imperial);
+}
+
+.companion-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.companion-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--border-brass);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    background: rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+}
+
+.companion-meta h4 {
+    font-family: var(--font-title);
+    font-size: 1.05rem;
+    color: var(--text-highlight);
+    margin-bottom: 0.2rem;
+}
+
+.companion-title {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-terminal);
+}
+
+.companion-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--font-terminal);
+    margin-top: 0.2rem;
+}
+
+.companion-status-badge.status-ally {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid #10b981;
+    color: #34d399;
+}
+
+.companion-status-badge.status-romance {
+    background: rgba(244, 63, 94, 0.18);
+    border: 1px solid #f43f5e;
+    color: #fb7185;
+}
+
+.companion-status-badge.status-thrall {
+    background: rgba(168, 85, 247, 0.18);
+    border: 1px solid #a855f7;
+    color: #c084fc;
+}
+
+.companion-status-badge.status-captive {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid #f59e0b;
+    color: #fbbf24;
+}
+
+.companion-bar-wrap {
+    margin-top: 0.25rem;
+}
+
+.companion-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-family: var(--font-terminal);
+    margin-bottom: 0.2rem;
+}
+
+.companion-meter-outer {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.companion-meter-inner {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.companion-meter-inner.affection {
+    background: linear-gradient(90deg, #ec4899, #f43f5e);
+}
+
+.companion-meter-inner.obedience {
+    background: linear-gradient(90deg, #8b5cf6, #a855f7);
+}
+
+.companion-perk {
+    font-size: 0.8rem;
+    color: var(--text-parchment);
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 4px;
+    padding: 0.5rem;
+    border-left: 3px solid var(--gold-imperial);
+    line-height: 1.35;
+}
+
+.companion-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+}
+
+.companion-act-btn {
+    flex: 1;
+    padding: 0.4rem;
+    font-size: 0.75rem;
+    font-family: var(--font-tactical);
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-iron);
+    color: var(--text-parchment);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.companion-act-btn:hover {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--gold-imperial);
+    color: var(--gold-imperial);
+}
+
+/* Mobile Responsiveness Improvements */
+@media (max-width: 768px) {
+    .universe-menu-box {
+        padding: 1.5rem 1rem;
+    }
+    .realm-cards-grid {
+        grid-template-columns: 1fr;
+    }
+    .companions-grid {
+        grid-template-columns: 1fr;
+    }
+    .header-controls {
+        gap: 0.35rem;
+    }
+    .header-controls button {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.72rem;
+    }
+}
+
 
 

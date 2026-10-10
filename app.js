@@ -113,12 +113,32 @@ class GrimdarkRPGApp {
         this.mainWrapperEl = document.querySelector('.main-wrapper');
 
         // Header controls
+        this.realmHubBtnEl = document.getElementById('realm-hub-btn');
+        this.companionsModalBtnEl = document.getElementById('companions-modal-btn');
+        this.companionCountBadgeEl = document.getElementById('companion-count-badge');
         this.campaignSelectBtnEl = document.getElementById('campaign-select-btn');
         this.audioBtnEl = document.getElementById('audio-btn');
         this.ambientBtnEl = document.getElementById('ambient-btn');
         this.resetBtnEl = document.getElementById('reset-btn');
         this.themeBtnEl = document.getElementById('theme-btn');
         this.saveBtnEl = document.getElementById('save-btn');
+
+        // Realm Hub Start Menu Modal
+        this.universeMenuBackdropEl = document.getElementById('universe-menu-backdrop');
+
+        // Companions Modal
+        this.companionsModalEl = document.getElementById('companions-modal');
+        this.companionsCloseBtnEl = document.getElementById('companions-close-btn');
+        this.companionsGridEl = document.getElementById('companions-grid');
+        this.countAllEl = document.getElementById('count-all');
+        this.countAlliesEl = document.getElementById('count-allies');
+        this.countThrallsEl = document.getElementById('count-thralls');
+        this.countCaptivesEl = document.getElementById('count-captives');
+        this.filterAllBtnEl = document.getElementById('filter-all-btn');
+        this.filterAlliesBtnEl = document.getElementById('filter-allies-btn');
+        this.filterThrallsBtnEl = document.getElementById('filter-thralls-btn');
+        this.filterCaptivesBtnEl = document.getElementById('filter-captives-btn');
+        this.inventoryListEl = document.getElementById('inventory-list');
     }
 
     bindEvents() {
@@ -212,6 +232,54 @@ class GrimdarkRPGApp {
 
         this.startAcolyteBtnEl.addEventListener('click', () => {
             this.finalizeAcolyteCharacter();
+        });
+
+        // Realm Hub and Companions Modal
+        if (this.realmHubBtnEl) {
+            this.realmHubBtnEl.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.showRealmHub();
+            });
+        }
+
+        if (this.companionsModalBtnEl) {
+            this.companionsModalBtnEl.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.showCompanionsModal();
+            });
+        }
+
+        if (this.companionsCloseBtnEl) {
+            this.companionsCloseBtnEl.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.companionsModalEl.style.display = 'none';
+            });
+        }
+
+        // Realm Hub Select buttons
+        document.querySelectorAll('.select-realm-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const realm = e.currentTarget.dataset.realm || 'warhammer';
+                this.switchUniverse(realm);
+                if (this.universeMenuBackdropEl) this.universeMenuBackdropEl.style.display = 'none';
+            });
+        });
+
+        // Companion Filter Tabs
+        [
+            { btn: this.filterAllBtnEl, filter: 'all' },
+            { btn: this.filterAlliesBtnEl, filter: 'allies' },
+            { btn: this.filterThrallsBtnEl, filter: 'thralls' },
+            { btn: this.filterCaptivesBtnEl, filter: 'captives' }
+        ].forEach(({ btn, filter }) => {
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    [this.filterAllBtnEl, this.filterAlliesBtnEl, this.filterThrallsBtnEl, this.filterCaptivesBtnEl].forEach(b => b && b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.renderCompanionsList(filter);
+                    window.soundEngine.playClick();
+                });
+            }
         });
 
         this.rollStatsBtnEl.addEventListener('click', () => {
@@ -1276,10 +1344,15 @@ class GrimdarkRPGApp {
         const tabs = this.mobileNavEl.querySelectorAll('.mobile-tab-btn');
         tabs.forEach(btn => {
             btn.addEventListener('click', () => {
+                const tabName = btn.dataset.tab;
+                if (tabName === 'companions') {
+                    this.showCompanionsModal();
+                    return;
+                }
+
                 tabs.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
-                const tabName = btn.dataset.tab;
                 this.mainWrapperEl.classList.remove('mobile-tab-mission', 'mobile-tab-dossier', 'mobile-tab-dice', 'mobile-tab-gear');
                 this.mainWrapperEl.classList.add(`mobile-tab-${tabName}`);
 
@@ -1647,6 +1720,354 @@ class GrimdarkRPGApp {
                 </div>
             </div>
         `;
+    }
+
+    showRealmHub() {
+        if (this.universeMenuBackdropEl) {
+            this.universeMenuBackdropEl.style.display = 'flex';
+        }
+    }
+
+    showCompanionsModal() {
+        if (!this.companionsModalEl) return;
+        this.companionsModalEl.style.display = 'flex';
+        this.renderCompanionsList('all');
+    }
+
+    getCompanionsRoster() {
+        if (!this.character) return [];
+        if (!this.character.companions) {
+            // Seed companions based on universe if not initialized
+            if (this.character.isFate) {
+                this.character.companions = [
+                    {
+                        id: 'saber_artoria',
+                        name: 'Artoria Pendragon',
+                        title: 'Saber // King of Knights',
+                        avatar: '⚔️',
+                        status: 'ally',
+                        affection: 65,
+                        obedience: 30,
+                        gender: 'female',
+                        voicePitch: 1.15,
+                        voiceRate: 0.98,
+                        canRomance: true,
+                        perk: 'Excalibur Support: +15 Damage to Noble Phantasms and high magic resistance.',
+                        quote: '"I ask of you, are you my Master? My sword is yours."'
+                    },
+                    {
+                        id: 'rin_tohsaka',
+                        name: 'Rin Tohsaka',
+                        title: 'Jewel Mage // Master of Archer',
+                        avatar: '💎',
+                        status: 'ally',
+                        affection: 50,
+                        obedience: 20,
+                        gender: 'female',
+                        voicePitch: 1.20,
+                        voiceRate: 1.02,
+                        canRomance: true,
+                        perk: 'Gandb Gemcraft: Deals 20 magical piercing damage in combat turns.',
+                        quote: '"Don\'t get the wrong idea! We\'re only cooperating until the Grail is secured."'
+                    },
+                    {
+                        id: 'medusa_rider',
+                        name: 'Medusa',
+                        title: 'Rider // Gorgon of the Blood Fort',
+                        avatar: '🐍',
+                        status: 'captive',
+                        affection: 20,
+                        obedience: 55,
+                        gender: 'female',
+                        voicePitch: 0.95,
+                        voiceRate: 0.92,
+                        canRomance: true,
+                        perk: 'Breaker Gorgon: Paralyzes target foes through mystic eyes of petrification.',
+                        quote: '"Do what you must. But be wary of gazing into my unveiled eyes."'
+                    }
+                ];
+            } else if (this.character.isOnePiece) {
+                this.character.companions = [
+                    {
+                        id: 'nami_navigator',
+                        name: 'Nami',
+                        title: 'Cat Burglar // Navigator of the Sea',
+                        avatar: '🍊',
+                        status: 'ally',
+                        affection: 70,
+                        obedience: 25,
+                        gender: 'female',
+                        voicePitch: 1.22,
+                        voiceRate: 1.05,
+                        canRomance: true,
+                        perk: 'Clima-Tact Tempo: Summons thunderbolts for +12 tactical damage and evades storm hazards.',
+                        quote: '"Set our sails toward the treasure! Anyone who gets in our way gets zapped!"'
+                    },
+                    {
+                        id: 'nico_robin',
+                        name: 'Nico Robin',
+                        title: 'Devil Child // Archaeologist',
+                        avatar: '🌸',
+                        status: 'ally',
+                        affection: 60,
+                        obedience: 40,
+                        gender: 'female',
+                        voicePitch: 1.05,
+                        voiceRate: 0.92,
+                        canRomance: true,
+                        perk: 'Hana Hana Clutch: Restrains hostile leaders, canceling 1 enemy counter-attack.',
+                        quote: '"Fascinating. May we proceed together into the darkness of forgotten history?"'
+                    },
+                    {
+                        id: 'tashigi_marine',
+                        name: 'Tashigi',
+                        title: 'Marine Captain // Swordswoman',
+                        avatar: '👓',
+                        status: 'captive',
+                        affection: 15,
+                        obedience: 60,
+                        gender: 'female',
+                        voicePitch: 1.12,
+                        voiceRate: 0.96,
+                        canRomance: true,
+                        perk: 'Marine Cipher Intel: Reveals naval blockade patrol routes and weapon caches.',
+                        quote: '"I am a soldier of Justice! I will never acknowledge a pirate pirate... so stop staring!"'
+                    }
+                ];
+            } else {
+                // Warhammer 40,000 Universe
+                this.character.companions = [
+                    {
+                        id: 'vaelith_sororitas',
+                        name: 'Sister Superior Vaelith',
+                        title: 'Order of the Sacred Rose // Canoness Aspirant',
+                        avatar: '⚜️',
+                        status: 'ally',
+                        affection: 65,
+                        obedience: 35,
+                        gender: 'female',
+                        voicePitch: 1.10,
+                        voiceRate: 0.95,
+                        canRomance: true,
+                        perk: 'Act of Faith: Purges warp taint and provides +15 Ballistic Skill on holy strikes.',
+                        quote: '"By the sacred blood of the God-Emperor, our duty is our redemption."'
+                    },
+                    {
+                        id: 'selene_valkyrie',
+                        name: 'First Captain Selene',
+                        title: 'Eclipse Valkyrie Commander // Second Legion',
+                        avatar: '👑',
+                        status: 'romance',
+                        affection: 90,
+                        obedience: 85,
+                        gender: 'female',
+                        voicePitch: 1.08,
+                        voiceRate: 0.94,
+                        canRomance: true,
+                        perk: 'Sovereign Devotion: Absorbs 1 fatal wound for the Primarch and delivers dual power sword cleave.',
+                        quote: '"My soul, my blade, and my body belong wholly to you, my Sovereign."'
+                    },
+                    {
+                        id: 'cultist_morrigan',
+                        name: 'Morrigan Veil',
+                        title: 'Subjugated Heretic Psyker // Slaneesh Thrall',
+                        avatar: '⛓️',
+                        status: 'thrall',
+                        affection: 45,
+                        obedience: 80,
+                        gender: 'female',
+                        voicePitch: 1.18,
+                        voiceRate: 0.92,
+                        canRomance: true,
+                        perk: 'Warp Tether: Drains hostile mental willpower and reveals occult pathways.',
+                        quote: '"Your chains feel colder than the void, Master... command my flesh as you see fit."'
+                    }
+                ];
+            }
+        }
+        return this.character.companions;
+    }
+
+    renderCompanionsList(filter = 'all') {
+        if (!this.companionsGridEl) return;
+        const roster = this.getCompanionsRoster();
+
+        // Update counts
+        const allCount = roster.length;
+        const alliesCount = roster.filter(c => c.status === 'ally' || c.status === 'romance').length;
+        const thrallsCount = roster.filter(c => c.status === 'thrall').length;
+        const captivesCount = roster.filter(c => c.status === 'captive' || c.status === 'rival').length;
+
+        if (this.countAllEl) this.countAllEl.textContent = allCount;
+        if (this.countAlliesEl) this.countAlliesEl.textContent = alliesCount;
+        if (this.countThrallsEl) this.countThrallsEl.textContent = thrallsCount;
+        if (this.countCaptivesEl) this.countCaptivesEl.textContent = captivesCount;
+        if (this.companionCountBadgeEl) this.companionCountBadgeEl.textContent = allCount;
+
+        const filtered = roster.filter(c => {
+            if (filter === 'allies') return c.status === 'ally' || c.status === 'romance';
+            if (filter === 'thralls') return c.status === 'thrall';
+            if (filter === 'captives') return c.status === 'captive' || c.status === 'rival';
+            return true;
+        });
+
+        this.companionsGridEl.innerHTML = '';
+        if (filtered.length === 0) {
+            this.companionsGridEl.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">No characters currently under this status. Explore more story encounters to recruit or capture them!</div>`;
+            return;
+        }
+
+        filtered.forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'companion-card';
+
+            const statusClass = `status-${c.status || 'ally'}`;
+            const statusLabel = (CompanionRules.STATUSES[(c.status || 'ally').toUpperCase()] || {}).label || c.status;
+
+            card.innerHTML = `
+                <div class="companion-header">
+                    <div class="companion-avatar">${c.avatar || '👤'}</div>
+                    <div class="companion-meta">
+                        <h4>${c.name}</h4>
+                        <div class="companion-title">${c.title}</div>
+                        <div class="companion-status-badge ${statusClass}">
+                            <span>${(CompanionRules.STATUSES[(c.status || 'ally').toUpperCase()] || {}).icon || '⚔️'}</span>
+                            <span>${statusLabel}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="companion-bar-wrap">
+                    <div class="companion-bar-label">
+                        <span>Affection / Bond:</span>
+                        <strong>${c.affection || 0}%</strong>
+                    </div>
+                    <div class="companion-meter-outer">
+                        <div class="companion-meter-inner affection" style="width: ${c.affection || 0}%;"></div>
+                    </div>
+                </div>
+
+                <div class="companion-bar-wrap">
+                    <div class="companion-bar-label">
+                        <span>Obedience / Submission:</span>
+                        <strong>${c.obedience || 0}%</strong>
+                    </div>
+                    <div class="companion-meter-outer">
+                        <div class="companion-meter-inner obedience" style="width: ${c.obedience || 0}%;"></div>
+                    </div>
+                </div>
+
+                <div class="companion-perk">
+                    <strong>Perk:</strong> ${c.perk || 'Loyal combat assistance'}
+                </div>
+
+                <div style="font-style: italic; font-size: 0.78rem; color: var(--amber-vox);">
+                    ${c.quote || ''}
+                </div>
+
+                <div class="companion-actions">
+                    <button class="companion-act-btn talk-btn">🗣️ Speak</button>
+                    <button class="companion-act-btn bond-btn">${c.status === 'captive' ? '⛓️ Subjugate' : '❤️ Intimacy'}</button>
+                </div>
+            `;
+
+            // Button actions
+            card.querySelector('.talk-btn').addEventListener('click', () => {
+                this.speakNpcDialogue(c);
+            });
+
+            card.querySelector('.bond-btn').addEventListener('click', () => {
+                if (c.status === 'captive') {
+                    c.obedience = Math.min(100, (c.obedience || 30) + 15);
+                    if (c.obedience >= 75) {
+                        c.status = 'thrall';
+                        alert(`${c.name} has been fully broken and bound into your service as a Subjugated Thrall!`);
+                    } else {
+                        alert(`You interrogate and subjugate ${c.name}. Obedience increased to ${c.obedience}%.`);
+                    }
+                } else {
+                    c.affection = Math.min(100, (c.affection || 50) + 12);
+                    if (c.affection >= 80 && c.canRomance && c.status === 'ally') {
+                        c.status = 'romance';
+                        alert(`Passionate intimacy sparks! ${c.name} has entered your personal Harem with unwavering romance!`);
+                    } else {
+                        alert(`You spend quiet, intimate moments with ${c.name}. Bond increased to ${c.affection}%.`);
+                    }
+                }
+                this.renderCompanionsList(filter);
+                this.saveGame();
+            });
+
+            this.companionsGridEl.appendChild(card);
+        });
+    }
+
+    speakNpcDialogue(companion) {
+        if (!('speechSynthesis' in window)) return;
+        this.stopVox();
+
+        const quote = companion.quote ? companion.quote.replace(/["']/g, '') : `Hello my sovereign, I am ${companion.name}.`;
+        const utterance = new SpeechSynthesisUtterance(quote);
+
+        const voices = window.speechSynthesis.getVoices();
+        // Look for best female voice if companion is female
+        let pickedVoice = null;
+        if (companion.gender === 'female' && voices) {
+            pickedVoice = voices.find(v => {
+                const n = v.name.toLowerCase();
+                return (n.includes('natural') || n.includes('neural') || n.includes('online')) &&
+                       (n.includes('female') || n.includes('sonia') || n.includes('jenny') || n.includes('libby') || n.includes('aria') || n.includes('samantha'));
+            }) || voices.find(v => {
+                const n = v.name.toLowerCase();
+                return n.includes('female') || n.includes('zira') || n.includes('samantha') || n.includes('karen') || n.includes('victoria');
+            });
+        }
+
+        if (pickedVoice) utterance.voice = pickedVoice;
+        utterance.pitch = companion.voicePitch || 1.15;
+        utterance.rate = companion.voiceRate || 0.96;
+
+        utterance.onstart = () => this.updateVoxUI(true);
+        utterance.onend = () => this.updateVoxUI(false);
+        utterance.onerror = () => this.updateVoxUI(false);
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    renderInventory() {
+        if (!this.inventoryListEl || !this.character) return;
+        this.inventoryListEl.innerHTML = '';
+
+        const inv = this.character.inventory || [];
+        if (inv.length === 0) {
+            this.inventoryListEl.innerHTML = `<div style="padding: 1rem; color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-terminal);">No items equipped in inventory.</div>`;
+            return;
+        }
+
+        inv.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'inventory-item-card';
+            card.style.cssText = 'background: rgba(0,0,0,0.4); border: 1px solid var(--border-iron); border-radius: 4px; padding: 0.5rem 0.75rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;';
+
+            let icon = '📦';
+            if (item.type === 'melee') icon = '🗡️';
+            if (item.type === 'ranged') icon = '🔫';
+            if (item.type === 'armor') icon = '🛡️';
+            if (item.type === 'relic') icon = '✨';
+
+            card.innerHTML = `
+                <div>
+                    <div style="font-weight: 700; color: var(--gold-imperial); font-size: 0.85rem;">${icon} ${item.name}</div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-terminal);">
+                        ${item.damage ? `Dmg: ${item.damage}` : ''} ${item.pen ? `| Pen: ${item.pen}` : ''} ${item.special || item.desc || ''}
+                    </div>
+                </div>
+                <div style="font-family: var(--font-terminal); font-size: 0.7rem; color: var(--amber-vox); text-transform: uppercase;">
+                    ${item.type || 'GEAR'}
+                </div>
+            `;
+            this.inventoryListEl.appendChild(card);
+        });
     }
 
     findNode(id) {

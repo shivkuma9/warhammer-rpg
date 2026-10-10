@@ -269,6 +269,46 @@ const OnePieceRules = {
     }
 };
 
+// ==========================================
+// Companions, Bonds, Thralls & Affiliation Rules Engine
+// ==========================================
+const CompanionRules = {
+    STATUSES: {
+        ALLY: { id: 'ally', label: 'Sworn Ally', icon: '⚔️', desc: 'Fights alongside you with devotion and grants combat assists.' },
+        ROMANCE: { id: 'romance', label: 'Romance / Harem', icon: '❤️', desc: 'Deep emotional and passionate bond, unlocks special moments and supreme resolve.' },
+        THRALL: { id: 'thrall', label: 'Subjugated Thrall', icon: '⛓️', desc: 'Broken to your command through fear or sorcery, obeys without question.' },
+        RIVAL: { id: 'rival', label: 'Rival / Nemesis', icon: '⚡', desc: 'Antagonist who constantly stalks you and seeks vengeance.' },
+        CAPTIVE: { id: 'captive', label: 'Captive Prisoner', icon: '🔒', desc: 'Interrogatable prisoner of war. Can be broken, recruited, or ransomed.' }
+    },
+
+    // Calculate combat assist bonus from active companion
+    calculateAssistBonus(companion) {
+        if (!companion) return 0;
+        let bonus = 0;
+        if (companion.status === 'ally') bonus += Math.floor((companion.affection || 50) / 10);
+        if (companion.status === 'romance') bonus += Math.floor((companion.affection || 70) / 7);
+        if (companion.status === 'thrall') bonus += Math.floor((companion.obedience || 50) / 10);
+        return Math.min(25, bonus);
+    },
+
+    // Process affection / obedience change
+    modifyBond(companion, delta, type = 'affection') {
+        if (!companion) return;
+        if (type === 'affection') {
+            companion.affection = Math.max(0, Math.min(100, (companion.affection || 0) + delta));
+            if (companion.affection >= 80 && companion.status === 'ally' && companion.canRomance) {
+                companion.status = 'romance';
+            }
+        } else if (type === 'obedience') {
+            companion.obedience = Math.max(0, Math.min(100, (companion.obedience || 0) + delta));
+            if (companion.obedience >= 75 && companion.status === 'captive') {
+                companion.status = 'thrall';
+            }
+        }
+    }
+};
+
 window.WarhammerRules = WarhammerRules;
 window.FateRules = FateRules;
 window.OnePieceRules = OnePieceRules;
+window.CompanionRules = CompanionRules;
