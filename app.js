@@ -120,8 +120,26 @@ class GrimdarkRPGApp {
         this.audioBtnEl = document.getElementById('audio-btn');
         this.ambientBtnEl = document.getElementById('ambient-btn');
         this.resetBtnEl = document.getElementById('reset-btn');
-        this.themeBtnEl = document.getElementById('theme-btn');
         this.saveBtnEl = document.getElementById('save-btn');
+
+        // Dynamic Panel Titles & Lore Labels across realms
+        this.dossierIconEl = document.getElementById('dossier-icon');
+        this.dossierPanelTitleEl = document.getElementById('dossier-panel-title');
+        this.vitalHpLabelEl = document.getElementById('vital-hp-label');
+        this.vitalFateLabelEl = document.getElementById('vital-fate-label');
+        this.vitalInsanityLabelEl = document.getElementById('vital-insanity-label');
+        this.vitalCorruptionLabelEl = document.getElementById('vital-corruption-label');
+        this.statMatrixHeadingEl = document.getElementById('stat-matrix-heading');
+        this.armorMatrixHeadingEl = document.getElementById('armor-matrix-heading');
+        this.terminalScreenIconEl = document.getElementById('terminal-screen-icon');
+        this.terminalScreenTitleEl = document.getElementById('terminal-screen-title');
+        this.voxIconEl = document.getElementById('vox-icon');
+        this.voxLabelEl = document.getElementById('vox-label');
+        this.dicePanelIconEl = document.getElementById('dice-panel-icon');
+        this.dicePanelTitleEl = document.getElementById('dice-panel-title');
+        this.recentCogitationsLabelEl = document.getElementById('recent-cogitations-label');
+        this.gearPanelIconEl = document.getElementById('gear-panel-icon');
+        this.gearPanelTitleEl = document.getElementById('gear-panel-title');
 
         // Realm Hub Start Menu Modal
         this.universeMenuBackdropEl = document.getElementById('universe-menu-backdrop');
@@ -134,11 +152,24 @@ class GrimdarkRPGApp {
         this.countAlliesEl = document.getElementById('count-allies');
         this.countThrallsEl = document.getElementById('count-thralls');
         this.countCaptivesEl = document.getElementById('count-captives');
-        this.filterAllBtnEl = document.getElementById('filter-all-btn');
-        this.filterAlliesBtnEl = document.getElementById('filter-allies-btn');
-        this.filterThrallsBtnEl = document.getElementById('filter-thralls-btn');
-        this.filterCaptivesBtnEl = document.getElementById('filter-captives-btn');
         this.inventoryListEl = document.getElementById('inventory-list');
+
+        // Store Modal Elements
+        this.storeModalBtnEl = document.getElementById('store-modal-btn');
+        this.storeBtnLabelEl = document.getElementById('store-btn-label');
+        this.storeModalEl = document.getElementById('store-modal');
+        this.storeCloseBtnEl = document.getElementById('store-close-btn');
+        this.storeModalTitleEl = document.getElementById('store-modal-title');
+        this.storeModalDescEl = document.getElementById('store-modal-desc');
+        this.storeMerchantBoxEl = document.getElementById('store-merchant-box');
+        this.storePlayerFundsEl = document.getElementById('store-player-funds');
+        this.storeCurrencySymbolEl = document.getElementById('store-currency-symbol');
+        this.storeItemsGridEl = document.getElementById('store-items-grid');
+
+        // Dynamic Creator Elements
+        this.creatorModalTitleEl = document.getElementById('creator-modal-title');
+        this.creatorModalSubEl = document.getElementById('creator-modal-sub');
+        this.creatorModeTabsEl = document.getElementById('creator-mode-tabs');
     }
 
     bindEvents() {
@@ -256,6 +287,21 @@ class GrimdarkRPGApp {
             });
         }
 
+        // Realm Store Modal events
+        if (this.storeModalBtnEl) {
+            this.storeModalBtnEl.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.showStoreModal();
+            });
+        }
+
+        if (this.storeCloseBtnEl) {
+            this.storeCloseBtnEl.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.storeModalEl.style.display = 'none';
+            });
+        }
+
         // Realm Hub Select buttons
         document.querySelectorAll('.select-realm-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -288,15 +334,28 @@ class GrimdarkRPGApp {
     }
 
     loadSavedGame() {
-        const saved = localStorage.getItem('grimdark_rpg_save');
+        const uniKey = this.universe || 'warhammer';
+        const saved = localStorage.getItem(`rpg_save_${uniKey}`) || (uniKey === 'warhammer' ? localStorage.getItem('grimdark_rpg_save') : null);
         if (saved) {
             try {
                 const data = JSON.parse(saved);
                 this.character = data.character;
-                this.campaignId = data.campaignId || (this.character.isPrimarch ? 'lost_primarch' : 'sector_44');
-                this.currentCampaign = this.campaignId === 'lost_primarch' 
-                    ? WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN 
-                    : WarhammerCampaignData.CAMPAIGN;
+                this.universe = data.universe || uniKey;
+                this.campaignId = data.campaignId;
+                
+                if (this.universe === 'fate') {
+                    this.currentCampaign = FateCampaignData.CAMPAIGN;
+                    if (!this.campaignId) this.campaignId = 'fate_fuyuki_war';
+                } else if (this.universe === 'onepiece') {
+                    this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
+                    if (!this.campaignId) this.campaignId = 'onepiece_grand_line';
+                } else {
+                    if (!this.campaignId) this.campaignId = this.character && this.character.isPrimarch ? 'lost_primarch' : 'sector_44';
+                    this.currentCampaign = this.campaignId === 'lost_primarch' 
+                        ? WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN 
+                        : WarhammerCampaignData.CAMPAIGN;
+                }
+
                 this.currentNode = data.currentNode;
                 this.currentCombat = data.currentCombat;
                 this.diceHistory = data.diceHistory || [];
@@ -311,33 +370,201 @@ class GrimdarkRPGApp {
     }
 
     saveGame() {
+        const uniKey = this.universe || 'warhammer';
         const data = {
+            universe: uniKey,
             character: this.character,
             campaignId: this.campaignId,
             currentNode: this.currentNode,
             currentCombat: this.currentCombat,
             diceHistory: this.diceHistory
         };
-        localStorage.setItem('grimdark_rpg_save', JSON.stringify(data));
+        localStorage.setItem(`rpg_save_${uniKey}`, JSON.stringify(data));
+        // Keep grimdark_rpg_save as fallback if in warhammer
+        if (uniKey === 'warhammer') {
+            localStorage.setItem('grimdark_rpg_save', JSON.stringify(data));
+        }
     }
 
     updateHeaderTitles() {
-        if (this.campaignId === 'lost_primarch') {
-            this.headerTitleEl.textContent = "WARHAMMER 40,000 : THE LOST II LEGION";
-            this.headerSubtitleEl.textContent = "DAUGHTERS OF THE ECLIPSE // SANCUS CRUCIBLE";
-            this.campaignSelectBtnEl.innerHTML = '<span>👑</span> Campaign: LOST PRIMARCH';
+        if (this.universe === 'fate') {
+            this.headerTitleEl.textContent = "FATE/STAY NIGHT : 5TH HOLY GRAIL WAR";
+            this.headerSubtitleEl.textContent = "FUYUKI MUNICIPALITY // CHALDEA COMMAND SYSTEM";
+            if (this.campaignSelectBtnEl) this.campaignSelectBtnEl.innerHTML = '<span>🗡️</span> Campaign: FUYUKI GRAIL WAR';
+            if (this.themeBtnEl) this.themeBtnEl.innerHTML = '<span>🔮</span> Universe: FATE / STAY NIGHT';
+            if (this.storeBtnLabelEl) this.storeBtnLabelEl.textContent = "Mystic Workshop";
+            
+            // Adapt Panel Titles & Icons for Fate
+            if (this.dossierIconEl) this.dossierIconEl.textContent = "✨";
+            if (this.dossierPanelTitleEl) this.dossierPanelTitleEl.textContent = "MASTER & SERVANT RECORD";
+            if (this.terminalScreenIconEl) this.terminalScreenIconEl.textContent = "🔮";
+            if (this.terminalScreenTitleEl) this.terminalScreenTitleEl.textContent = "FUYUKI GRAIL WAR SITUATION";
+            if (this.voxIconEl) this.voxIconEl.textContent = "🎙️";
+            if (this.voxLabelEl) this.voxLabelEl.textContent = "CHALDEA GRAIL NARRATOR";
+            if (this.dicePanelIconEl) this.dicePanelIconEl.textContent = "🎲";
+            if (this.dicePanelTitleEl) this.dicePanelTitleEl.textContent = "CIRCUIT D100 CHECK";
+            if (this.recentCogitationsLabelEl) this.recentCogitationsLabelEl.textContent = "Recent Magic Circuit Rolls:";
+            if (this.gearPanelIconEl) this.gearPanelIconEl.textContent = "💎";
+            if (this.gearPanelTitleEl) this.gearPanelTitleEl.textContent = "MYSTIC CODES & GEMS";
+            if (this.statMatrixHeadingEl) this.statMatrixHeadingEl.textContent = "Servant Parameters (D100)";
+            if (this.armorMatrixHeadingEl) this.armorMatrixHeadingEl.textContent = "Magic Resistance & Armor";
+
+            const aquila = document.querySelector('.aquila-badge');
+            if (aquila) aquila.textContent = "⚔️";
+        } else if (this.universe === 'onepiece') {
+            this.headerTitleEl.textContent = "ONE PIECE : GRAND LINE SOVEREIGN";
+            this.headerSubtitleEl.textContent = "REVERSE MOUNTAIN TO NEW WORLD // 250,000,000 BOUNTY";
+            if (this.campaignSelectBtnEl) this.campaignSelectBtnEl.innerHTML = '<span>🌊</span> Campaign: GRAND LINE SAGA';
+            if (this.themeBtnEl) this.themeBtnEl.innerHTML = '<span>🏴‍☠️</span> Universe: ONE PIECE';
+            if (this.storeBtnLabelEl) this.storeBtnLabelEl.textContent = "Pirate Bazaar";
+
+            // Adapt Panel Titles & Icons for One Piece
+            if (this.dossierIconEl) this.dossierIconEl.textContent = "🏴‍☠️";
+            if (this.dossierPanelTitleEl) this.dossierPanelTitleEl.textContent = "PIRATE CAPTAIN LOG";
+            if (this.terminalScreenIconEl) this.terminalScreenIconEl.textContent = "🧭";
+            if (this.terminalScreenTitleEl) this.terminalScreenTitleEl.textContent = "GRAND LINE LOG POSE TELEMETRY";
+            if (this.voxIconEl) this.voxIconEl.textContent = "🎙️";
+            if (this.voxLabelEl) this.voxLabelEl.textContent = "TRANSPONDER SNAIL NARRATOR";
+            if (this.dicePanelIconEl) this.dicePanelIconEl.textContent = "🎲";
+            if (this.dicePanelTitleEl) this.dicePanelTitleEl.textContent = "HAKI CLASH D100";
+            if (this.recentCogitationsLabelEl) this.recentCogitationsLabelEl.textContent = "Recent Haki & Clash Rolls:";
+            if (this.gearPanelIconEl) this.gearPanelIconEl.textContent = "🗡️";
+            if (this.gearPanelTitleEl) this.gearPanelTitleEl.textContent = "TREASURE & MEITO BLADES";
+            if (this.statMatrixHeadingEl) this.statMatrixHeadingEl.textContent = "Pirate Capabilities & Haki";
+            if (this.armorMatrixHeadingEl) this.armorMatrixHeadingEl.textContent = "Armament Haki Defense";
+
+            const aquila = document.querySelector('.aquila-badge');
+            if (aquila) aquila.textContent = "☠";
         } else {
-            this.headerTitleEl.textContent = "WARHAMMER 40,000 : ORDO HERETICUS";
-            this.headerSubtitleEl.textContent = "TACTICAL D100 COGITATOR TERMINAL // SECTOR 44";
-            this.campaignSelectBtnEl.innerHTML = '<span>📜</span> Campaign: SECTOR 44';
+            // Warhammer 40,000
+            if (this.campaignId === 'lost_primarch') {
+                this.headerTitleEl.textContent = "WARHAMMER 40,000 : THE LOST II LEGION";
+                this.headerSubtitleEl.textContent = "DAUGHTERS OF THE ECLIPSE // SANCUS CRUCIBLE";
+                if (this.campaignSelectBtnEl) this.campaignSelectBtnEl.innerHTML = '<span>👑</span> Campaign: LOST PRIMARCH';
+            } else {
+                this.headerTitleEl.textContent = "WARHAMMER 40,000 : ORDO HERETICUS";
+                this.headerSubtitleEl.textContent = "TACTICAL D100 COGITATOR TERMINAL // SECTOR 44";
+                if (this.campaignSelectBtnEl) this.campaignSelectBtnEl.innerHTML = '<span>📜</span> Campaign: SECTOR 44';
+            }
+            if (this.themeBtnEl) this.themeBtnEl.innerHTML = '<span>🦅</span> Universe: WARHAMMER 40K';
+            if (this.storeBtnLabelEl) this.storeBtnLabelEl.textContent = "Armory Store";
+
+            // Adapt Panel Titles & Icons for Warhammer 40k
+            if (this.dossierIconEl) this.dossierIconEl.textContent = "📜";
+            if (this.dossierPanelTitleEl) this.dossierPanelTitleEl.textContent = "CHARACTER DOSSIER";
+            if (this.terminalScreenIconEl) this.terminalScreenIconEl.textContent = "📡";
+            if (this.terminalScreenTitleEl) this.terminalScreenTitleEl.textContent = "TACTICAL SITUATION DISPLAY";
+            if (this.voxIconEl) this.voxIconEl.textContent = "🎙️";
+            if (this.voxLabelEl) this.voxLabelEl.textContent = "INQUISITORIAL VOX-NARRATOR";
+            if (this.dicePanelIconEl) this.dicePanelIconEl.textContent = "🎲";
+            if (this.dicePanelTitleEl) this.dicePanelTitleEl.textContent = "D100 COGITATOR";
+            if (this.recentCogitationsLabelEl) this.recentCogitationsLabelEl.textContent = "Recent Cogitations:";
+            if (this.gearPanelIconEl) this.gearPanelIconEl.textContent = "🎒";
+            if (this.gearPanelTitleEl) this.gearPanelTitleEl.textContent = "GEAR & RELICS";
+            if (this.statMatrixHeadingEl) this.statMatrixHeadingEl.textContent = "Characteristics (D100)";
+            if (this.armorMatrixHeadingEl) this.armorMatrixHeadingEl.textContent = "Armor Soak by Location";
+
+            const aquila = document.querySelector('.aquila-badge');
+            if (aquila) aquila.textContent = "🦅";
         }
     }
 
     showCharacterCreator() {
         this.creatorModalEl.style.display = 'flex';
-        this.renderPrimarchAspectCards();
-        this.renderStatAllocator();
-        this.renderAcolyteCards();
+        const uni = this.universe || 'warhammer';
+
+        if (uni === 'fate') {
+            if (this.creatorModalTitleEl) this.creatorModalTitleEl.textContent = "🔮 FATE / STAY NIGHT : MASTER SELECTION 🔮";
+            if (this.creatorModalSubEl) this.creatorModalSubEl.textContent = "Select your Master of the 5th Holy Grail War ritual in Fuyuki City.";
+            if (this.creatorModeTabsEl) this.creatorModeTabsEl.style.display = 'none';
+            if (this.tabPrimarchViewEl) this.tabPrimarchViewEl.style.display = 'none';
+            if (this.tabAcolyteViewEl) this.tabAcolyteViewEl.style.display = 'block';
+            this.renderFateMasterCards();
+        } else if (uni === 'onepiece') {
+            if (this.creatorModalTitleEl) this.creatorModalTitleEl.textContent = "🏴‍☠️ ONE PIECE : PIRATE CAPTAIN CREATION 🏴‍☠️";
+            if (this.creatorModalSubEl) this.creatorModalSubEl.textContent = "Choose your Supernova Captain to set sail from Reverse Mountain across the Grand Line.";
+            if (this.creatorModeTabsEl) this.creatorModeTabsEl.style.display = 'none';
+            if (this.tabPrimarchViewEl) this.tabPrimarchViewEl.style.display = 'none';
+            if (this.tabAcolyteViewEl) this.tabAcolyteViewEl.style.display = 'block';
+            this.renderOnePieceCaptainCards();
+        } else {
+            // Warhammer 40K
+            if (this.creatorModalTitleEl) this.creatorModalTitleEl.textContent = "⚔ WARHAMMER 40,000 : CHARACTER CREATION ⚔";
+            if (this.creatorModalSubEl) this.creatorModalSubEl.textContent = "Forge your Acolyte or Awaken as the Lost Primarch of the II Legion.";
+            if (this.creatorModeTabsEl) this.creatorModeTabsEl.style.display = 'flex';
+            if (this.tabPrimarchBtnEl.classList.contains('active')) {
+                this.tabPrimarchViewEl.style.display = 'block';
+                this.tabAcolyteViewEl.style.display = 'none';
+            } else {
+                this.tabPrimarchViewEl.style.display = 'none';
+                this.tabAcolyteViewEl.style.display = 'block';
+            }
+            this.renderPrimarchAspectCards();
+            this.renderStatAllocator();
+            this.renderAcolyteCards();
+        }
+    }
+
+    renderFateMasterCards() {
+        this.archetypeContainerEl.innerHTML = '';
+        FateCampaignData.MASTERS.forEach((master, idx) => {
+            const card = document.createElement('div');
+            card.className = `archetype-card ${idx === 0 ? 'selected' : ''}`;
+            card.dataset.id = master.id;
+
+            card.innerHTML = `
+                <div class="archetype-header">
+                    <div class="archetype-name">${master.name}</div>
+                    <div class="archetype-order">${master.order}</div>
+                </div>
+                <div class="archetype-quote">${master.quote}</div>
+                <div class="archetype-highlights">
+                    <div><strong>Title:</strong> ${master.title}</div>
+                    <div><strong>Stats:</strong> STR ${master.stats.str} | END ${master.stats.end} | MANA ${master.stats.mana} | NP ${master.stats.np}</div>
+                    <div><strong>HP:</strong> ${master.woundsMax} | <strong>Seals:</strong> ${master.commandSpells}</div>
+                    <div><strong>Starting Mystic Code:</strong> ${master.inventory.map(i => i.name).slice(0, 2).join(', ')}</div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                document.querySelectorAll('#archetype-container .archetype-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                window.soundEngine.playClick();
+            });
+
+            this.archetypeContainerEl.appendChild(card);
+        });
+    }
+
+    renderOnePieceCaptainCards() {
+        this.archetypeContainerEl.innerHTML = '';
+        OnePieceCampaignData.CAPTAINS.forEach((cap, idx) => {
+            const card = document.createElement('div');
+            card.className = `archetype-card ${idx === 0 ? 'selected' : ''}`;
+            card.dataset.id = cap.id;
+
+            card.innerHTML = `
+                <div class="archetype-header">
+                    <div class="archetype-name">${cap.name}</div>
+                    <div class="archetype-order">${cap.order}</div>
+                </div>
+                <div class="archetype-quote">${cap.quote}</div>
+                <div class="archetype-highlights">
+                    <div><strong>Title:</strong> ${cap.title}</div>
+                    <div><strong>Bounty:</strong> ฿${cap.bounty.toLocaleString()}</div>
+                    <div><strong>Stats:</strong> Might ${cap.stats.might} | Agi ${cap.stats.agility} | Haki ${cap.stats.haoshoku}</div>
+                    <div><strong>Gear:</strong> ${cap.inventory.map(i => i.name).slice(0, 2).join(', ')}</div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                document.querySelectorAll('#archetype-container .archetype-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                window.soundEngine.playClick();
+            });
+
+            this.archetypeContainerEl.appendChild(card);
+        });
     }
 
     renderPrimarchAspectCards() {
@@ -467,6 +694,7 @@ class GrimdarkRPGApp {
         const aspectTemplate = WarhammerCampaignData.PRIMARCH_CLASSES.find(a => a.id === this.selectedAspectId) 
             || WarhammerCampaignData.PRIMARCH_CLASSES[0];
 
+        this.universe = 'warhammer';
         this.character = {
             id: 'custom_primarch',
             name: name,
@@ -474,6 +702,7 @@ class GrimdarkRPGApp {
             gender: gender,
             order: 'The II Legion: Daughters of the Eclipse',
             isPrimarch: true,
+            funds: 1200,
             stats: JSON.parse(JSON.stringify(this.primarchStats)),
             woundsMax: aspectTemplate.woundsMax,
             woundsCurrent: aspectTemplate.woundsMax,
@@ -500,16 +729,41 @@ class GrimdarkRPGApp {
 
     finalizeAcolyteCharacter() {
         const selected = document.querySelector('#archetype-container .archetype-card.selected');
-        const archId = selected ? selected.dataset.id : 'interrogator';
-        const template = WarhammerCampaignData.ARCHETYPES.find(a => a.id === archId);
+        const selectedId = selected ? selected.dataset.id : null;
+        const uni = this.universe || 'warhammer';
 
-        this.character = JSON.parse(JSON.stringify(template));
-        this.character.woundsCurrent = this.character.woundsMax;
-        this.character.isPrimarch = false;
+        if (uni === 'fate') {
+            const template = FateCampaignData.MASTERS.find(m => m.id === selectedId) || FateCampaignData.MASTERS[0];
+            this.character = JSON.parse(JSON.stringify(template));
+            this.character.isFate = true;
+            this.character.woundsCurrent = this.character.woundsMax;
+            this.character.funds = 800;
+            this.character.servant = FateCampaignData.SERVANTS[0];
+            this.campaignId = 'fate_fuyuki_war';
+            this.currentCampaign = FateCampaignData.CAMPAIGN;
+            this.currentNode = 'fate_ch1_summoning';
+        } else if (uni === 'onepiece') {
+            const template = OnePieceCampaignData.CAPTAINS.find(c => c.id === selectedId) || OnePieceCampaignData.CAPTAINS[0];
+            this.character = JSON.parse(JSON.stringify(template));
+            this.character.isOnePiece = true;
+            this.character.woundsCurrent = this.character.woundsMax;
+            this.character.funds = 1500;
+            this.character.crew = OnePieceCampaignData.CREW_OFFICERS;
+            this.campaignId = 'onepiece_grand_line';
+            this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
+            this.currentNode = 'op_ch1_reverse_mountain';
+        } else {
+            // Warhammer Acolyte
+            const template = WarhammerCampaignData.ARCHETYPES.find(a => a.id === (selectedId || 'interrogator')) || WarhammerCampaignData.ARCHETYPES[0];
+            this.character = JSON.parse(JSON.stringify(template));
+            this.character.woundsCurrent = this.character.woundsMax;
+            this.character.isPrimarch = false;
+            this.character.funds = 600;
+            this.campaignId = 'sector_44';
+            this.currentCampaign = WarhammerCampaignData.CAMPAIGN;
+            this.currentNode = this.currentCampaign.chapters[0].id;
+        }
 
-        this.campaignId = 'sector_44';
-        this.currentCampaign = WarhammerCampaignData.CAMPAIGN;
-        this.currentNode = this.currentCampaign.chapters[0].id;
         this.currentCombat = null;
 
         window.soundEngine.playConfirm();
@@ -1233,44 +1487,75 @@ class GrimdarkRPGApp {
         this.universe = uni;
         window.soundEngine.playSuccess();
 
+        // Update body theme classes
+        document.body.classList.remove('theme-fate', 'theme-onepiece');
         if (uni === 'fate') {
-            document.body.classList.remove('theme-onepiece');
             document.body.classList.add('theme-fate');
-            this.themeBtnEl.innerHTML = '<span>🔮</span> Universe: FATE / STAY NIGHT';
-            this.campaignId = 'fate_fuyuki_war';
-            this.currentCampaign = FateCampaignData.CAMPAIGN;
-            this.character = JSON.parse(JSON.stringify(FateCampaignData.MASTERS[0]));
-            this.character.isFate = true;
-            this.character.servant = FateCampaignData.SERVANTS[0];
-            this.currentNode = 'fate_ch1_summoning';
-            this.headerTitleEl.textContent = "FATE/STAY NIGHT : 5TH HOLY GRAIL WAR";
-            this.headerSubtitleEl.textContent = "FUYUKI MUNICIPALITY // CHALDEA COMMAND SYSTEM";
-            this.campaignSelectBtnEl.innerHTML = '<span>🗡️</span> Campaign: FUYUKI GRAIL WAR';
         } else if (uni === 'onepiece') {
-            document.body.classList.remove('theme-fate');
             document.body.classList.add('theme-onepiece');
-            this.themeBtnEl.innerHTML = '<span>🏴‍☠️</span> Universe: ONE PIECE';
-            this.campaignId = 'onepiece_grand_line';
-            this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
-            this.character = JSON.parse(JSON.stringify(OnePieceCampaignData.CAPTAINS[0]));
-            this.character.isOnePiece = true;
-            this.character.crew = OnePieceCampaignData.CREW_OFFICERS;
-            this.currentNode = 'op_ch1_reverse_mountain';
-            this.headerTitleEl.textContent = "ONE PIECE : GRAND LINE SOVEREIGN";
-            this.headerSubtitleEl.textContent = "REVERSE MOUNTAIN TO NEW WORLD // 250,000,000 BOUNTY";
-            this.campaignSelectBtnEl.innerHTML = '<span>🌊</span> Campaign: GRAND LINE SAGA';
-        } else {
-            document.body.classList.remove('theme-fate', 'theme-onepiece');
-            this.themeBtnEl.innerHTML = '<span>🦅</span> Universe: WARHAMMER 40K';
-            this.campaignId = 'lost_primarch';
-            this.currentCampaign = WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN;
-            this.character = this.createDefaultPrimarch();
-            this.currentNode = 'lp_ch1_awakening';
-            this.updateHeaderTitles();
         }
 
-        this.currentCombat = null;
-        this.diceHistory = [];
+        // Check if there is an existing save slot for this realm
+        const saved = localStorage.getItem(`rpg_save_${uni}`) || (uni === 'warhammer' ? localStorage.getItem('grimdark_rpg_save') : null);
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                this.character = data.character;
+                this.campaignId = data.campaignId;
+                if (uni === 'fate') {
+                    this.currentCampaign = FateCampaignData.CAMPAIGN;
+                } else if (uni === 'onepiece') {
+                    this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
+                } else {
+                    this.currentCampaign = this.campaignId === 'lost_primarch' 
+                        ? WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN 
+                        : WarhammerCampaignData.CAMPAIGN;
+                }
+                this.currentNode = data.currentNode;
+                this.currentCombat = data.currentCombat;
+                this.diceHistory = data.diceHistory || [];
+            } catch (e) {
+                console.error("Failed to parse realm save:", e);
+                this.character = null;
+            }
+        } else {
+            this.character = null;
+        }
+
+        // If no save exists for this realm, initialize clean default character
+        if (!this.character) {
+            if (uni === 'fate') {
+                this.campaignId = 'fate_fuyuki_war';
+                this.currentCampaign = FateCampaignData.CAMPAIGN;
+                this.character = JSON.parse(JSON.stringify(FateCampaignData.MASTERS[0]));
+                this.character.isFate = true;
+                this.character.funds = 800;
+                this.character.servant = FateCampaignData.SERVANTS[0];
+                this.currentNode = 'fate_ch1_summoning';
+            } else if (uni === 'onepiece') {
+                this.campaignId = 'onepiece_grand_line';
+                this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
+                this.character = JSON.parse(JSON.stringify(OnePieceCampaignData.CAPTAINS[0]));
+                this.character.isOnePiece = true;
+                this.character.funds = 1500;
+                this.character.crew = OnePieceCampaignData.CREW_OFFICERS;
+                this.currentNode = 'op_ch1_reverse_mountain';
+            } else {
+                this.campaignId = 'lost_primarch';
+                this.currentCampaign = WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN;
+                this.character = this.createDefaultPrimarch();
+                this.currentNode = 'lp_ch1_awakening';
+            }
+            this.currentCombat = null;
+            this.diceHistory = [];
+        }
+
+        // Ensure character's funds is defined
+        if (this.character && this.character.funds === undefined) {
+            this.character.funds = (uni === 'fate') ? 800 : (uni === 'onepiece' ? 1500 : 1000);
+        }
+
+        this.updateHeaderTitles();
         this.renderAll();
         this.saveGame();
     }
@@ -1745,9 +2030,12 @@ class GrimdarkRPGApp {
 
     getCompanionsRoster() {
         if (!this.character) return [];
-        if (!this.character.companions) {
-            // Seed companions based on universe if not initialized
-            if (this.character.isFate) {
+        
+        // Strict segregation: Ensure companions match active realm
+        const currentUniverse = this.character.isFate ? 'fate' : (this.character.isOnePiece ? 'onepiece' : 'warhammer');
+        if (!this.character.companions || this.character.companionsUniverse !== currentUniverse) {
+            this.character.companionsUniverse = currentUniverse;
+            if (currentUniverse === 'fate') {
                 this.character.companions = [
                     {
                         id: 'saber_artoria',
@@ -1795,7 +2083,7 @@ class GrimdarkRPGApp {
                         quote: '"Do what you must. But be wary of gazing into my unveiled eyes."'
                     }
                 ];
-            } else if (this.character.isOnePiece) {
+            } else if (currentUniverse === 'onepiece') {
                 this.character.companions = [
                     {
                         id: 'nami_navigator',
@@ -2077,6 +2365,105 @@ class GrimdarkRPGApp {
             `;
             this.inventoryListEl.appendChild(card);
         });
+    }
+
+    showStoreModal() {
+        if (!this.storeModalEl || !this.character) return;
+        this.storeModalEl.style.display = 'flex';
+
+        const uni = this.universe || 'warhammer';
+        const storeInfo = (window.UniverseStoreData && window.UniverseStoreData[uni]) || {
+            currencyName: 'Gold / Gelt',
+            currencySymbol: '🪙',
+            storeTitle: 'REALM REQUISITION STORE',
+            storeDesc: 'Purchase gear suited to your world.',
+            merchantName: 'Quartermaster',
+            merchantQuote: '"Welcome, traveler. What do you seek?"',
+            items: []
+        };
+
+        if (this.character.funds === undefined) {
+            this.character.funds = (uni === 'fate') ? 800 : (uni === 'onepiece' ? 1500 : 1000);
+        }
+
+        if (this.storeModalTitleEl) this.storeModalTitleEl.textContent = storeInfo.storeTitle;
+        if (this.storeModalDescEl) this.storeModalDescEl.textContent = storeInfo.storeDesc;
+        if (this.storePlayerFundsEl) this.storePlayerFundsEl.textContent = this.character.funds.toLocaleString();
+        if (this.storeCurrencySymbolEl) this.storeCurrencySymbolEl.textContent = storeInfo.currencySymbol;
+
+        if (this.storeMerchantBoxEl) {
+            this.storeMerchantBoxEl.innerHTML = `
+                <div style="font-weight: bold; color: var(--gold-imperial); margin-bottom: 0.25rem;">${storeInfo.merchantName}:</div>
+                <div>${storeInfo.merchantQuote}</div>
+            `;
+        }
+
+        // Render store items
+        if (this.storeItemsGridEl) {
+            this.storeItemsGridEl.innerHTML = '';
+            storeInfo.items.forEach(item => {
+                const canAfford = this.character.funds >= item.price;
+                const card = document.createElement('div');
+                card.style.cssText = 'background: rgba(0,0,0,0.5); border: 1px solid var(--border-iron); border-radius: 6px; padding: 0.75rem; display: flex; flex-direction: column; justify-content: space-between;';
+
+                let icon = '📦';
+                if (item.type === 'melee') icon = '🗡️';
+                if (item.type === 'ranged') icon = '🔫';
+                if (item.type === 'armor') icon = '🛡️';
+                if (item.type === 'relic') icon = '✨';
+                if (item.type === 'consumable') icon = '🧪';
+
+                card.innerHTML = `
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.35rem;">
+                            <span style="font-weight: bold; color: var(--gold-imperial); font-size: 0.88rem;">${icon} ${item.name}</span>
+                            <span style="font-family: var(--font-terminal); color: ${canAfford ? '#4ade80' : '#f87171'}; font-weight: bold; font-size: 0.85rem;">
+                                ${item.price} ${storeInfo.currencySymbol}
+                            </span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; margin-bottom: 0.5rem;">
+                            ${item.desc || ''}
+                            ${item.damage ? `<div style="color: var(--amber-vox); font-family: var(--font-terminal); margin-top: 0.2rem;">Damage: ${item.damage} | Pen: ${item.pen || 0}</div>` : ''}
+                            ${item.heals ? `<div style="color: #4ade80; font-family: var(--font-terminal); margin-top: 0.2rem;">Restores: ${item.heals} HP</div>` : ''}
+                        </div>
+                    </div>
+                    <button class="buy-item-btn" style="background: ${canAfford ? 'linear-gradient(180deg, rgba(202,138,4,0.3) 0%, rgba(133,77,14,0.5) 100%)' : 'rgba(50,50,50,0.3)'}; border: 1px solid ${canAfford ? 'var(--gold-imperial)' : 'var(--border-iron)'}; color: ${canAfford ? '#fff' : 'var(--text-muted)'}; padding: 0.35rem 0.6rem; border-radius: 4px; font-family: var(--font-terminal); font-size: 0.78rem; cursor: ${canAfford ? 'pointer' : 'not-allowed'};" ${canAfford ? '' : 'disabled'}>
+                        ${canAfford ? 'REQUISITION ITEM' : 'INSUFFICIENT FUNDS'}
+                    </button>
+                `;
+
+                if (canAfford) {
+                    card.querySelector('.buy-item-btn').addEventListener('click', () => {
+                        this.buyStoreItem(item, storeInfo);
+                    });
+                }
+
+                this.storeItemsGridEl.appendChild(card);
+            });
+        }
+    }
+
+    buyStoreItem(item, storeInfo) {
+        if (!this.character || this.character.funds < item.price) return;
+        this.character.funds -= item.price;
+        if (!this.character.inventory) this.character.inventory = [];
+
+        // Check if consumable exists already to increment count
+        if (item.type === 'consumable') {
+            const existing = this.character.inventory.find(i => i.id === item.id);
+            if (existing) {
+                existing.count = (existing.count || 1) + (item.count || 1);
+            } else {
+                this.character.inventory.push(JSON.parse(JSON.stringify(item)));
+            }
+        } else {
+            this.character.inventory.push(JSON.parse(JSON.stringify(item)));
+        }
+
+        window.soundEngine.playSuccess();
+        this.renderInventory();
+        this.saveGame();
+        this.showStoreModal(); // refresh UI
     }
 
     findNode(id) {

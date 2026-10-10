@@ -201,6 +201,61 @@ const WarhammerRules = {
     }
 };
 
+// Universe Currency & Store Requisition Catalogues
+const UniverseStoreData = {
+    warhammer: {
+        currencyName: 'Throne Gelt (TG)',
+        currencySymbol: '🪙',
+        storeTitle: 'INQUISITORIAL ARMORY & FORGE-SHRINE',
+        storeDesc: 'Requisition sanctified weaponry, blessed armor, and bionic implants approved by the Ordo Hereticus and Adeptus Mechanicus.',
+        merchantQuote: '"The Emperor provides, but the Munitorum counts every bolt round. What do you require, Agent?"',
+        merchantName: 'Forge-Adept Scoria',
+        items: [
+            { id: 'wh_st_1', name: 'Master-Crafted Boltgun', price: 450, type: 'ranged', damage: '1d10+7', pen: 5, qualities: ['Tearing', 'Accurate'], desc: 'Sacred .75 cal Godwyn pattern rifle inscribed with purity seals.' },
+            { id: 'wh_st_2', name: 'Sanctified Power Sword', price: 500, type: 'melee', damage: '1d10+8', pen: 6, qualities: ['Power Field'], desc: 'Disruption field blade that vaporizes enemy armor on contact.' },
+            { id: 'wh_st_3', name: 'Ignis Purifier Flamer', price: 380, type: 'ranged', damage: '1d10+6', pen: 3, qualities: ['Flame', 'Area Spray'], desc: 'Chemical promethium nozzle to cleanse cultist warrens with holy fire.' },
+            { id: 'wh_st_4', name: 'Ignis Power Armor Carapace', price: 650, type: 'armor', armorBonus: 2, desc: 'Heavy adamantine plate reinforcement adding +2 Soak to all locations.' },
+            { id: 'wh_st_5', name: 'Combat Medicae Kit (x3)', price: 150, type: 'consumable', count: 3, heals: 8, desc: 'Coagulant stimulants and sterile skin-welder for immediate trauma triage.' },
+            { id: 'wh_st_6', name: 'Blessed Rosarius Field', price: 600, type: 'relic', desc: 'Emits an impenetrable force bubble that deflects fatal kinetic and warp strikes.' }
+        ]
+    },
+    fate: {
+        currencyName: 'Mana Prana Gems',
+        currencySymbol: '💎',
+        storeTitle: 'CLOCK TOWER & CHALDEA MYSTIC WORKSHOP',
+        storeDesc: 'Purchase enchanted Mystic Codes, Azoth blades, alchemical gems, and homunculus catalysts for the Holy Grail War.',
+        merchantQuote: '"Welcome to the workshop. Bring enough jewel catalysts, and even miracles can be transcribed into craft."',
+        merchantName: 'Tohsaka Workshop Automaton',
+        items: [
+            { id: 'ft_st_1', name: 'Ruby Burst Jewel (x3)', price: 300, type: 'consumable', count: 3, heals: 0, desc: 'Stored Gandr blast detonating for 25 unblockable damage upon release.' },
+            { id: 'ft_st_2', name: 'Black Keys of the Church (x4)', price: 400, type: 'ranged', damage: '1d10+6', pen: 4, qualities: ['Anti-Demonic'], desc: 'Holy baptismal blades flung in sets to pin enemy shadows and spirits.' },
+            { id: 'ft_st_3', name: 'Formalcraft Azoth Blade', price: 550, type: 'melee', damage: '1d10+7', pen: 5, qualities: ['Mana Burst'], desc: 'Masterpiece ritual dagger amplifying offensive spell casting.' },
+            { id: 'ft_st_4', name: 'Chaldea Mystic Code Cloak', price: 500, type: 'armor', armorBonus: 2, desc: 'Woven with magical ether threads, conferring spell resistance and +2 defense.' },
+            { id: 'ft_st_5', name: 'Ambrosia of the Einzberns (x2)', price: 200, type: 'consumable', count: 2, heals: 10, desc: 'Pure liquid prana that knits ruptured flesh and restarts stopped hearts.' },
+            { id: 'ft_st_6', name: 'False Command Spell Seal', price: 700, type: 'relic', desc: 'Single-use artificial Command Seal capable of issuing an absolute Servant order.' }
+        ]
+    },
+    onepiece: {
+        currencyName: 'Berries (฿)',
+        currencySymbol: '฿',
+        storeTitle: 'LOGUETOWN BAZAAR & UNDERWORLD SMUGGLER',
+        storeDesc: 'Equip your pirate crew with Meito graded katanas, dial cannons, rumble balls, and Sea-Prism stone weapons.',
+        merchantQuote: '"Heh heh heh! Got plenty of gold from the Grand Line, Captain? Take your pick before the Marines arrive!"',
+        merchantName: 'Loguetown Weaponsmith Ipponmatsu',
+        items: [
+            { id: 'op_st_1', name: 'Wazamono Graded Katana: "Kitsunebi"', price: 450, type: 'melee', damage: '2d10+5', pen: 5, qualities: ['Flame Slash'], desc: 'A famed named blade that cuts through flame and steel alike.' },
+            { id: 'op_st_2', name: 'Impact Dial Arm-Cannon', price: 400, type: 'ranged', damage: '2d10+6', pen: 4, qualities: ['Kinetic Blast'], desc: 'Skypiea shell dial releasing absorbed shockwaves directly into the target.' },
+            { id: 'op_st_3', name: 'Sea-Prism Stone Jitte', price: 550, type: 'melee', damage: '1d10+6', pen: 6, qualities: ['Devil Fruit Nullify'], desc: 'Weapon tip crafted from pure Kairoseki that paralyzes Devil Fruit users.' },
+            { id: 'op_st_4', name: 'Armament Hardened Leather Coat', price: 420, type: 'armor', armorBonus: 2, desc: 'Tough sea-beast leather reinforcing your defense by +2 on all hits.' },
+            { id: 'op_st_5', name: 'Sanji Special Vitality Feast', price: 180, type: 'consumable', count: 2, heals: 12, desc: 'Gourmet Pirate recipe instantly restoring 12 HP and max stamina.' },
+            { id: 'op_st_6', name: 'Log Pose to New World', price: 600, type: 'relic', desc: 'Triple-needle compass that detects hidden magnetic islands and treasure.' }
+        ]
+    }
+};
+
+window.UniverseStoreData = UniverseStoreData;
+
+
 // ==========================================
 // Fate/stay night Rules Engine (Chaldea/Fuyuki)
 // ==========================================
