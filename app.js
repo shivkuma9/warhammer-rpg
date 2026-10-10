@@ -17,6 +17,9 @@ class GrimdarkRPGApp {
         this.primarchStats = { ws: 68, bs: 65, s: 62, t: 64, ag: 55, int: 60, per: 58, wp: 68, fel: 72 };
         this.selectedAspectId = 'solar_warmaster';
 
+        // Cloud Database Sync (Supabase)
+        this.cloudDb = window.CloudDatabaseManager ? new window.CloudDatabaseManager() : null;
+
         this.initElements();
         this.bindEvents();
         this.loadSavedGame();
@@ -166,6 +169,20 @@ class GrimdarkRPGApp {
         this.storeCurrencySymbolEl = document.getElementById('store-currency-symbol');
         this.storeItemsGridEl = document.getElementById('store-items-grid');
 
+        // Cloud Database Sync Modal Elements
+        this.cloudModalBtnEl = document.getElementById('cloud-modal-btn');
+        this.cloudModalEl = document.getElementById('cloud-modal');
+        this.cloudCloseBtnEl = document.getElementById('cloud-close-btn');
+        this.cloudStatusBadgeEl = document.getElementById('cloud-status-badge');
+        this.cloudPlayerIdDisplayEl = document.getElementById('cloud-player-id-display');
+        this.supabaseUrlInputEl = document.getElementById('supabase-url-input');
+        this.supabaseKeyInputEl = document.getElementById('supabase-key-input');
+        this.cloudConnectBtnEl = document.getElementById('cloud-connect-btn');
+        this.cloudDisconnectBtnEl = document.getElementById('cloud-disconnect-btn');
+        this.cloudUploadBtnEl = document.getElementById('cloud-upload-btn');
+        this.cloudDownloadBtnEl = document.getElementById('cloud-download-btn');
+        this.cloudFeedbackMsgEl = document.getElementById('cloud-feedback-msg');
+
         // Dynamic Creator Elements
         this.creatorModalTitleEl = document.getElementById('creator-modal-title');
         this.creatorModalSubEl = document.getElementById('creator-modal-sub');
@@ -299,6 +316,104 @@ class GrimdarkRPGApp {
             this.storeCloseBtnEl.addEventListener('click', () => {
                 window.soundEngine.playClick();
                 this.storeModalEl.style.display = 'none';
+            });
+        }
+
+        // Cloud Database Sync Modal events
+        if (this.cloudModalBtnEl) {
+            this.cloudModalBtnEl.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.showCloudModal();
+            });
+        }
+
+        if (this.cloudCloseBtnEl) {
+            this.cloudCloseBtnEl.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.cloudModalEl.style.display = 'none';
+            });
+        }
+
+        if (this.cloudConnectBtnEl) {
+            this.cloudConnectBtnEl.addEventListener('click', () => {
+                const url = this.supabaseUrlInputEl.value.trim();
+                const key = this.supabaseKeyInputEl.value.trim();
+                if (!url || !key) {
+                    alert("Please enter both your Supabase Project URL and Anon API Key.");
+                    return;
+                }
+                const success = this.cloudDb.setCredentials(url, key);
+                this.updateCloudUI();
+                if (success) {
+                    window.soundEngine.playSuccess();
+                    this.cloudFeedbackMsgEl.textContent = "✔ Supabase connected successfully!";
+                    this.cloudFeedbackMsgEl.style.color = "#4ade80";
+                } else {
+                    window.soundEngine.playFailure();
+                    this.cloudFeedbackMsgEl.textContent = "✖ Connection failed. Check your Supabase credentials.";
+                    this.cloudFeedbackMsgEl.style.color = "#f87171";
+                }
+            });
+        }
+
+        if (this.cloudDisconnectBtnEl) {
+            this.cloudDisconnectBtnEl.addEventListener('click', () => {
+                this.cloudDb.setCredentials('', '');
+                this.updateCloudUI();
+                window.soundEngine.playClick();
+                this.cloudFeedbackMsgEl.textContent = "Disconnected from cloud. Using local storage.";
+                this.cloudFeedbackMsgEl.style.color = "var(--text-muted)";
+            });
+        }
+
+        if (this.cloudUploadBtnEl) {
+            this.cloudUploadBtnEl.addEventListener('click', async () => {
+                const uniKey = this.universe || 'warhammer';
+                const currentData = {
+                    universe: uniKey,
+                    character: this.character,
+                    campaignId: this.campaignId,
+                    currentNode: this.currentNode,
+                    currentCombat: this.currentCombat,
+                    diceHistory: this.diceHistory
+                };
+                this.cloudFeedbackMsgEl.textContent = "Uploading save to Supabase...";
+                this.cloudFeedbackMsgEl.style.color = "var(--amber-vox)";
+                const res = await this.cloudDb.saveToCloud(uniKey, currentData);
+                if (res.success) {
+                    window.soundEngine.playSuccess();
+                    this.cloudFeedbackMsgEl.textContent = `✔ Successfully backed up ${uniKey.toUpperCase()} save to Supabase!`;
+                    this.cloudFeedbackMsgEl.style.color = "#4ade80";
+                } else {
+                    window.soundEngine.playFailure();
+                    this.cloudFeedbackMsgEl.textContent = `✖ Upload failed: ${res.error || res.reason}`;
+                    this.cloudFeedbackMsgEl.style.color = "#f87171";
+                }
+            });
+        }
+
+        if (this.cloudDownloadBtnEl) {
+            this.cloudDownloadBtnEl.addEventListener('click', async () => {
+                const uniKey = this.universe || 'warhammer';
+                this.cloudFeedbackMsgEl.textContent = "Fetching save from Supabase...";
+                this.cloudFeedbackMsgEl.style.color = "var(--amber-vox)";
+                const res = await this.cloudDb.loadFromCloud(uniKey);
+                if (res.success && res.saveData) {
+                    window.soundEngine.playSuccess();
+                    this.character = res.saveData.character;
+                    this.campaignId = res.saveData.campaignId;
+                    this.currentNode = res.saveData.currentNode;
+                    this.currentCombat = res.saveData.currentCombat;
+                    this.diceHistory = res.saveData.diceHistory || [];
+                    this.renderAll();
+                    this.saveGame();
+                    this.cloudFeedbackMsgEl.textContent = `✔ Successfully synced ${uniKey.toUpperCase()} progress from Cloud!`;
+                    this.cloudFeedbackMsgEl.style.color = "#4ade80";
+                } else {
+                    window.soundEngine.playFailure();
+                    this.cloudFeedbackMsgEl.textContent = res.notFound ? `No cloud save found for ${uniKey.toUpperCase()}.` : `✖ Download failed: ${res.error || res.reason}`;
+                    this.cloudFeedbackMsgEl.style.color = "#f87171";
+                }
             });
         }
 
@@ -2464,6 +2579,39 @@ class GrimdarkRPGApp {
         this.renderInventory();
         this.saveGame();
         this.showStoreModal(); // refresh UI
+    }
+
+    showCloudModal() {
+        if (!this.cloudModalEl) return;
+        this.cloudModalEl.style.display = 'flex';
+        this.updateCloudUI();
+    }
+
+    updateCloudUI() {
+        if (!this.cloudDb) return;
+        if (this.cloudPlayerIdDisplayEl) {
+            this.cloudPlayerIdDisplayEl.textContent = this.cloudDb.playerId || '-';
+        }
+        if (this.supabaseUrlInputEl && !this.supabaseUrlInputEl.value) {
+            this.supabaseUrlInputEl.value = this.cloudDb.projectUrl || '';
+        }
+        if (this.supabaseKeyInputEl && !this.supabaseKeyInputEl.value) {
+            this.supabaseKeyInputEl.value = this.cloudDb.anonKey || '';
+        }
+
+        if (this.cloudStatusBadgeEl) {
+            if (this.cloudDb.syncEnabled) {
+                this.cloudStatusBadgeEl.textContent = "CONNECTED // REAL-TIME SYNC ACTIVE";
+                this.cloudStatusBadgeEl.style.background = "rgba(34, 197, 94, 0.2)";
+                this.cloudStatusBadgeEl.style.borderColor = "#22c55e";
+                this.cloudStatusBadgeEl.style.color = "#4ade80";
+            } else {
+                this.cloudStatusBadgeEl.textContent = "OFFLINE // LOCAL STORAGE ONLY";
+                this.cloudStatusBadgeEl.style.background = "rgba(239, 68, 68, 0.2)";
+                this.cloudStatusBadgeEl.style.borderColor = "#ef4444";
+                this.cloudStatusBadgeEl.style.color = "#f87171";
+            }
+        }
     }
 
     findNode(id) {

@@ -115,6 +115,7 @@
             <div class="header-controls">
                 <button class="theme-toggle-btn" id="realm-hub-btn" title="Choose Realm World (Warhammer, Fate, One Piece)"><span>🌌</span> Realm Hub</button>
                 <button class="theme-toggle-btn" id="store-modal-btn" title="Requisition Gear & Supplies from Realm Store"><span>🛒</span> <span id="store-btn-label">Armory Store</span></button>
+                <button class="theme-toggle-btn" id="cloud-modal-btn" title="Cloud Database Save & Sync"><span>☁️</span> Cloud Sync</button>
                 <button class="theme-toggle-btn" id="companions-modal-btn" title="View Companions, Bonds, Thralls & Captives"><span>👥</span> Crew / Harem (<span id="companion-count-badge">0</span>)</button>
                 <button class="theme-toggle-btn" id="campaign-select-btn" title="Switch Campaign Storyline"><span>📜</span> Campaign: SECTOR 44</button>
                 <button class="audio-btn" id="lock-btn" title="Lock Terminal with Password"><span>🔒</span> Lock</button>
@@ -424,7 +425,50 @@
         </div>
     </div>
 
+    <!-- Cloud Database Sync Modal (Supabase) -->
+    <div class="modal-backdrop" id="cloud-modal" style="display: none;">
+        <div class="modal-content" style="max-width: 650px;">
+            <button class="modal-close-btn" id="cloud-close-btn" title="Close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: 1px solid var(--border-iron); color: var(--text-muted); font-size: 1.2rem; cursor: pointer; border-radius: 4px; padding: 0.2rem 0.6rem;">✕</button>
+            <h2 class="modal-title">☁️ SUPABASE CLOUD DATABASE SYNC</h2>
+            <p class="modal-sub">Connect your free Supabase database to save your heroes and progress across multiple devices.</p>
+
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-iron); border-radius: 6px; padding: 1rem; margin-bottom: 1.2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <span style="font-size: 0.85rem; color: var(--gold-imperial); font-weight: bold;">Cloud Status:</span>
+                    <span id="cloud-status-badge" style="font-family: var(--font-terminal); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #f87171;">OFFLINE / LOCAL STORAGE ONLY</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                    Your Player Cloud ID: <code id="cloud-player-id-display" style="color: var(--amber-vox); font-family: var(--font-terminal);">-</code>
+                </div>
+            </div>
+
+            <div class="custom-creator-form">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="supabase-url-input">Supabase Project URL:</label>
+                    <input type="text" id="supabase-url-input" class="custom-input" placeholder="https://xyzcompany.supabase.co">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="supabase-key-input">Supabase Anon Public API Key:</label>
+                    <input type="password" id="supabase-key-input" class="custom-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                </div>
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 1.25rem;">
+                    <button class="initiate-campaign-btn" id="cloud-connect-btn" style="flex: 1; padding: 0.6rem;">CONNECT DATABASE</button>
+                    <button class="roll-stats-btn" id="cloud-disconnect-btn" style="padding: 0.6rem 1rem;">DISCONNECT</button>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-iron); padding-top: 1rem; display: flex; gap: 0.75rem;">
+                <button class="vox-btn" id="cloud-upload-btn" style="flex: 1; justify-content: center;" title="Upload current game to Supabase"><span>⬆️</span> Upload Current Save to Cloud</button>
+                <button class="vox-btn" id="cloud-download-btn" style="flex: 1; justify-content: center;" title="Download save from Supabase"><span>⬇️</span> Download Save from Cloud</button>
+            </div>
+            
+            <div id="cloud-feedback-msg" style="margin-top: 0.8rem; font-family: var(--font-terminal); font-size: 0.8rem; min-height: 1.2rem; text-align: center;"></div>
+        </div>
+    </div>
+
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase_sync.js"></script>
     <script src="audio.js"></script>
     <script src="rules.js"></script>
     <script src="campaign_warhammer.js"></script>
