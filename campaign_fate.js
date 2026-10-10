@@ -340,6 +340,7 @@ Before the embrace can linger, thunderous sonic booms split the night air over F
                     badge: 'SUBJUGATION COMPLETE',
                     badgeClass: 'threat-extreme',
                     icon: '⛓️',
+                    image: 'assets/shinji_thrall_ritual.jpg',
                     quote: '"Look at you, proud Heroic Spirit! Under my False Tome, your pride belongs to Shinji Matou!"',
                     tags: ['Thrall Bound', 'Obedience Surge', 'Matou Bloodline']
                 },
@@ -608,6 +609,7 @@ Your Servant stands proudly at your right hand, sword drawn in salute: "Our vict
                     badge: 'HAREM DOMINION',
                     badgeClass: 'threat-sanctum',
                     icon: '👑',
+                    image: 'assets/shinji_harem_palace.jpg',
                     quote: '"Hahaha! The entire Grail War bowed before me! Saber, Rider... pour your Master another goblet!"',
                     tags: ['Shinji Ascendant', 'Harem Master', 'Subjugated Servants', 'Total Victory']
                 },
