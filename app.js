@@ -556,7 +556,7 @@ class GrimdarkRPGApp {
             this.character.isPokemon = true;
             this.character.funds = 1200;
             this.character.maidens = PokemonCampaignData.DEVOTED_MAIDENS;
-            this.currentNode = 'poke_ch1_saffron_gym';
+            this.currentNode = 'poke_ch1_route1_start';
         } else {
             this.universe = 'warhammer';
             this.campaignId = 'lost_primarch';
@@ -1026,7 +1026,7 @@ class GrimdarkRPGApp {
             this.character.maidens = PokemonCampaignData.DEVOTED_MAIDENS;
             this.campaignId = 'pokemon_champions_league';
             this.currentCampaign = PokemonCampaignData.CAMPAIGN;
-            this.currentNode = 'poke_ch1_saffron_gym';
+            this.currentNode = 'poke_ch1_route1_start';
         } else {
             // Warhammer Acolyte
             const template = WarhammerCampaignData.ARCHETYPES.find(a => a.id === (selectedId || 'interrogator')) || WarhammerCampaignData.ARCHETYPES[0];
@@ -1931,7 +1931,7 @@ class GrimdarkRPGApp {
                 this.character.isPokemon = true;
                 this.character.funds = 1200;
                 this.character.maidens = PokemonCampaignData.DEVOTED_MAIDENS;
-                this.currentNode = 'poke_ch1_saffron_gym';
+                this.currentNode = 'poke_ch1_route1_start';
             } else {
                 this.campaignId = 'lost_primarch';
                 this.currentCampaign = WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN;
@@ -2549,6 +2549,21 @@ class GrimdarkRPGApp {
             } else if (currentUniverse === 'pokemon') {
                 this.character.companions = [
                     {
+                        id: 'maya_rival',
+                        name: 'Rival Maya',
+                        title: 'Childhood Rival // Spirited Ace Trainer',
+                        avatar: '🧢',
+                        status: 'romance',
+                        affection: 80,
+                        obedience: 35,
+                        gender: 'female',
+                        voicePitch: 1.28,
+                        voiceRate: 1.05,
+                        canRomance: true,
+                        perk: 'Rival\'s Passionate Drive: Grants +15 to initiative and +10 to all attack tests when fighting side-by-side.',
+                        quote: '"Don\'t think you can leave me behind! We\'re going to the top of the League together... and I expect lots of dates on the way!"'
+                    },
+                    {
                         id: 'cynthia_champion',
                         name: 'Champion Cynthia',
                         title: 'Sinnoh League Champion // Dragon Mistress',
@@ -2667,6 +2682,21 @@ class GrimdarkRPGApp {
                         canRomance: true,
                         perk: 'Queenly Majesty: Completely prevents enemy surprise attacks and priority strikes.',
                         quote: '"Fools dare look at my Trainer? Trop Kick them into oblivion! ...Ahem, now that they are gone, stroke my hair, my King."'
+                    },
+                    {
+                        id: 'ninetales_kaguya',
+                        name: 'Alolan Ninetales (Kaguya)',
+                        title: 'The Nine-Tailed Frost Maiden // Kitsune Empress',
+                        avatar: '🦊',
+                        status: 'romance',
+                        affection: 86,
+                        obedience: 75,
+                        gender: 'female',
+                        voicePitch: 1.15,
+                        voiceRate: 0.92,
+                        canRomance: true,
+                        perk: 'Aurora Veil Sanctuary: Halves all elemental and kinetic damage taken by your team.',
+                        quote: '"Under the northern aurora, my nine tails wrap you in ancient warmth. My spirit is bound to yours for eternity."'
                     }
                 ];
             } else {
