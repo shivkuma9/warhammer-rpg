@@ -124,6 +124,7 @@ class GrimdarkRPGApp {
         this.ambientBtnEl = document.getElementById('ambient-btn');
         this.resetBtnEl = document.getElementById('reset-btn');
         this.saveBtnEl = document.getElementById('save-btn');
+        this.themeBtnEl = document.getElementById('theme-btn');
 
         // Dynamic Panel Titles & Lore Labels across realms
         this.dossierIconEl = document.getElementById('dossier-icon');
@@ -219,32 +220,44 @@ class GrimdarkRPGApp {
             });
         }
 
-        this.fateRerollBtnEl.addEventListener('click', () => this.handleFateReroll());
+        if (this.fateRerollBtnEl) {
+            this.fateRerollBtnEl.addEventListener('click', () => this.handleFateReroll());
+        }
 
-        this.audioBtnEl.addEventListener('click', () => {
-            window.soundEngine.enabled = !window.soundEngine.enabled;
-            this.audioBtnEl.innerHTML = window.soundEngine.enabled ? '<span>🔊</span> Sound: ON' : '<span>🔇</span> Sound: OFF';
-            if (window.soundEngine.enabled) window.soundEngine.playClick();
-        });
+        if (this.audioBtnEl) {
+            this.audioBtnEl.addEventListener('click', () => {
+                window.soundEngine.enabled = !window.soundEngine.enabled;
+                this.audioBtnEl.innerHTML = window.soundEngine.enabled ? '<span>🔊</span> Sound: ON' : '<span>🔇</span> Sound: OFF';
+                if (window.soundEngine.enabled) window.soundEngine.playClick();
+            });
+        }
 
-        this.ambientBtnEl.addEventListener('click', () => {
-            const active = window.soundEngine.toggleAmbient();
-            this.ambientBtnEl.innerHTML = active ? '<span>⚡</span> Warp Drone: ACTIVE' : '<span>⚡</span> Warp Drone: OFF';
-        });
+        if (this.ambientBtnEl) {
+            this.ambientBtnEl.addEventListener('click', () => {
+                const active = window.soundEngine.toggleAmbient();
+                this.ambientBtnEl.innerHTML = active ? '<span>⚡</span> Warp Drone: ACTIVE' : '<span>⚡</span> Warp Drone: OFF';
+            });
+        }
 
-        this.resetBtnEl.addEventListener('click', () => {
-            window.soundEngine.playClick();
-            this.showCharacterCreator();
-        });
+        if (this.resetBtnEl) {
+            this.resetBtnEl.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.showCharacterCreator();
+            });
+        }
 
-        this.campaignSelectBtnEl.addEventListener('click', () => {
-            window.soundEngine.playClick();
-            this.showCharacterCreator();
-        });
+        if (this.campaignSelectBtnEl) {
+            this.campaignSelectBtnEl.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.showRealmHub();
+            });
+        }
 
-        this.themeBtnEl.addEventListener('click', () => {
-            this.toggleUniverse();
-        });
+        if (this.themeBtnEl) {
+            this.themeBtnEl.addEventListener('click', () => {
+                this.toggleUniverse();
+            });
+        }
 
         // Tabs in creator modal
         this.tabPrimarchBtnEl.addEventListener('click', () => {
@@ -464,6 +477,9 @@ class GrimdarkRPGApp {
             try {
                 const data = JSON.parse(saved);
                 this.character = data.character;
+                if (!this.character || !this.character.stats || !this.character.name) {
+                    this.character = null;
+                }
                 this.universe = data.universe || uniKey;
                 this.campaignId = data.campaignId;
                 
@@ -496,11 +512,15 @@ class GrimdarkRPGApp {
 
                 this.currentCombat = data.currentCombat;
                 this.diceHistory = data.diceHistory || [];
-                this.updateHeaderTitles();
-                this.renderAll();
-                return;
+                
+                if (this.character) {
+                    this.updateHeaderTitles();
+                    this.renderAll();
+                    return;
+                }
             } catch (e) {
                 console.error("Failed to load saved state:", e);
+                this.character = null;
             }
         }
 
@@ -1738,6 +1758,9 @@ class GrimdarkRPGApp {
             try {
                 const data = JSON.parse(saved);
                 this.character = data.character;
+                if (!this.character || !this.character.stats || !this.character.name) {
+                    this.character = null;
+                }
                 this.campaignId = data.campaignId;
                 if (uni === 'fate') {
                     this.currentCampaign = FateCampaignData.CAMPAIGN;
@@ -1832,6 +1855,10 @@ class GrimdarkRPGApp {
 
         if (isUnlocked) {
             this.lockGateBackdropEl.style.display = 'none';
+            // If the user has not explicitly chosen a universe yet, show Realm Hub so they are not forced into Warhammer
+            if (!localStorage.getItem('omni_active_universe')) {
+                setTimeout(() => this.showRealmHub(), 250);
+            }
         } else {
             this.lockGateBackdropEl.style.display = 'flex';
             setTimeout(() => this.gatePassInputEl.focus(), 200);
