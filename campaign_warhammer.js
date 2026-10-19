@@ -1147,6 +1147,15 @@ The physical union that follows is amplified by psychic resonance—every touch,
                 title: 'The Healer’s Sacred Touch',
                 act: 'Act II - Sensual Care & Adoration (Selene)',
                 atmosphere: 'Warm oils, flickering candle reflections on smooth skin, rhythmic soothing caresses.',
+                illustration: {
+                    title: 'Selene\'s Tender Devotion',
+                    badge: 'SACRED BOND',
+                    badgeClass: 'threat-sanctum',
+                    icon: '💖',
+                    image: 'assets/selene_portrait.jpg',
+                    quote: '"You carried the weight of the galaxy before the stasis took you... let me soothe every ache."',
+                    tags: ['Apothecary Selene', 'Deep Devotion', 'Sensual Massage']
+                },
                 narrative: `Apothecary Selene kneels beside your couch, uncorking crystal phials of warm, fragrant lavender and solar lotus oils. 
                 
 Her dark eyes are warm with reverence as she pours the soothing elixir across your broad shoulders and begins to massage your godlike muscles with firm, expert hands.
@@ -1171,6 +1180,15 @@ The night unfolds in tender devotion, mutual adoration, and blissful physical co
                 title: 'The Sovereign’s Divine Court',
                 act: 'Act II - Ultimate Devotion (All Lieutenants)',
                 atmosphere: 'Warm golden glow, laughter, shared wine, silk and armor shed together in unconditional love.',
+                illustration: {
+                    title: 'The Daughters of the Eclipse',
+                    badge: 'SUPREME HAREM',
+                    badgeClass: 'threat-sanctum',
+                    icon: '👑',
+                    image: 'assets/selene_portrait.jpg',
+                    quote: '"We are your court, your lovers, and your eternal guardians."',
+                    tags: ['Lieutenants United', 'Eternal Covenant', 'Supreme Devotion']
+                },
                 narrative: `You gesture to the colossal royal divan, welcoming all three of your lieutenants into your arms. 
                 
 There is no jealousy among the Daughters of the Eclipse—only collective adoration for the Primarch who created them. Valerie lies across your left side, her strong arm draped protectively over your chest; Morgana rests against your right, whispering sweet telepathic melodies into your thoughts; while Selene kneels between your legs, unfastening your clasps with a radiant smile.

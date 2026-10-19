@@ -491,6 +491,10 @@ class GrimdarkRPGApp {
                     this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
                     if (!this.campaignId) this.campaignId = 'onepiece_grand_line';
                     if (this.character) this.character.isOnePiece = true;
+                } else if (this.universe === 'pokemon') {
+                    this.currentCampaign = PokemonCampaignData.CAMPAIGN;
+                    if (!this.campaignId) this.campaignId = 'pokemon_champions_league';
+                    if (this.character) this.character.isPokemon = true;
                 } else {
                     if (!this.campaignId) this.campaignId = this.character && this.character.isPrimarch ? 'lost_primarch' : 'sector_44';
                     this.currentCampaign = this.campaignId === 'lost_primarch' 
@@ -499,6 +503,7 @@ class GrimdarkRPGApp {
                     if (this.character) {
                         delete this.character.isFate;
                         delete this.character.isOnePiece;
+                        delete this.character.isPokemon;
                     }
                 }
 
@@ -543,6 +548,15 @@ class GrimdarkRPGApp {
             this.character.funds = 1500;
             this.character.crew = OnePieceCampaignData.CREW_OFFICERS;
             this.currentNode = 'op_ch1_reverse_mountain';
+        } else if (uniKey === 'pokemon') {
+            this.universe = 'pokemon';
+            this.campaignId = 'pokemon_champions_league';
+            this.currentCampaign = PokemonCampaignData.CAMPAIGN;
+            this.character = JSON.parse(JSON.stringify(PokemonCampaignData.TRAINERS[0]));
+            this.character.isPokemon = true;
+            this.character.funds = 1200;
+            this.character.maidens = PokemonCampaignData.DEVOTED_MAIDENS;
+            this.currentNode = 'poke_ch1_saffron_gym';
         } else {
             this.universe = 'warhammer';
             this.campaignId = 'lost_primarch';
@@ -624,6 +638,30 @@ class GrimdarkRPGApp {
 
             const aquila = document.querySelector('.aquila-badge');
             if (aquila) aquila.textContent = "☠";
+        } else if (this.universe === 'pokemon') {
+            this.headerTitleEl.textContent = "POKÉMON : MAIDENS OF THE LEAGUE";
+            this.headerSubtitleEl.textContent = "INDIGO & SINNOH EXPEDITION // D&D POKÉMON LEAGUE";
+            if (this.campaignSelectBtnEl) this.campaignSelectBtnEl.innerHTML = '<span>⚡</span> Campaign: INDIGO LEAGUE';
+            if (this.themeBtnEl) this.themeBtnEl.innerHTML = '<span>🔴</span> Universe: POKÉMON';
+            if (this.storeBtnLabelEl) this.storeBtnLabelEl.textContent = "Silph Emporium";
+
+            // Adapt Panel Titles & Icons for Pokemon
+            if (this.dossierIconEl) this.dossierIconEl.textContent = "⚡";
+            if (this.dossierPanelTitleEl) this.dossierPanelTitleEl.textContent = "TRAINER & MAIDEN DOSSIER";
+            if (this.terminalScreenIconEl) this.terminalScreenIconEl.textContent = "🏆";
+            if (this.terminalScreenTitleEl) this.terminalScreenTitleEl.textContent = "LEAGUE STADIUM SITUATION";
+            if (this.voxIconEl) this.voxIconEl.textContent = "🎙️";
+            if (this.voxLabelEl) this.voxLabelEl.textContent = "ROTOM-DEX NARRATOR";
+            if (this.dicePanelIconEl) this.dicePanelIconEl.textContent = "🎲";
+            if (this.dicePanelTitleEl) this.dicePanelTitleEl.textContent = "AURA & MOVE D100 CHECK";
+            if (this.recentCogitationsLabelEl) this.recentCogitationsLabelEl.textContent = "Recent Move & Battle Rolls:";
+            if (this.gearPanelIconEl) this.gearPanelIconEl.textContent = "🎒";
+            if (this.gearPanelTitleEl) this.gearPanelTitleEl.textContent = "BAG & KEY ITEMS";
+            if (this.statMatrixHeadingEl) this.statMatrixHeadingEl.textContent = "Battle Parameters (D100)";
+            if (this.armorMatrixHeadingEl) this.armorMatrixHeadingEl.textContent = "Defense & Special Shielding";
+
+            const aquila = document.querySelector('.aquila-badge');
+            if (aquila) aquila.textContent = "⚡";
         } else {
             // Warhammer 40,000
             if (this.campaignId === 'lost_primarch') {
@@ -676,6 +714,13 @@ class GrimdarkRPGApp {
             if (this.tabPrimarchViewEl) this.tabPrimarchViewEl.style.display = 'none';
             if (this.tabAcolyteViewEl) this.tabAcolyteViewEl.style.display = 'block';
             this.renderOnePieceCaptainCards();
+        } else if (uni === 'pokemon') {
+            if (this.creatorModalTitleEl) this.creatorModalTitleEl.textContent = "⚡ POKÉMON : LEAGUE TRAINER CREATION ⚡";
+            if (this.creatorModalSubEl) this.creatorModalSubEl.textContent = "Choose your Trainer archetype to conquer the Indigo League and win the hearts of the League Maidens.";
+            if (this.creatorModeTabsEl) this.creatorModeTabsEl.style.display = 'none';
+            if (this.tabPrimarchViewEl) this.tabPrimarchViewEl.style.display = 'none';
+            if (this.tabAcolyteViewEl) this.tabAcolyteViewEl.style.display = 'block';
+            this.renderPokemonTrainerCards();
         } else {
             // Warhammer 40K
             if (this.creatorModalTitleEl) this.creatorModalTitleEl.textContent = "⚔ WARHAMMER 40,000 : CHARACTER CREATION ⚔";
@@ -743,6 +788,37 @@ class GrimdarkRPGApp {
                     <div><strong>Bounty:</strong> ฿${cap.bounty.toLocaleString()}</div>
                     <div><strong>Stats:</strong> Might ${cap.stats.might} | Agi ${cap.stats.agility} | Haki ${cap.stats.haoshoku}</div>
                     <div><strong>Gear:</strong> ${cap.inventory.map(i => i.name).slice(0, 2).join(', ')}</div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                document.querySelectorAll('#archetype-container .archetype-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                window.soundEngine.playClick();
+            });
+
+            this.archetypeContainerEl.appendChild(card);
+        });
+    }
+
+    renderPokemonTrainerCards() {
+        this.archetypeContainerEl.innerHTML = '';
+        PokemonCampaignData.TRAINERS.forEach((trainer, idx) => {
+            const card = document.createElement('div');
+            card.className = `archetype-card ${idx === 0 ? 'selected' : ''}`;
+            card.dataset.id = trainer.id;
+
+            card.innerHTML = `
+                <div class="archetype-header">
+                    <div class="archetype-name">${trainer.name}</div>
+                    <div class="archetype-order">${trainer.order}</div>
+                </div>
+                <div class="archetype-quote">${trainer.quote}</div>
+                <div class="archetype-highlights">
+                    <div><strong>Title:</strong> ${trainer.title}</div>
+                    <div><strong>Stats:</strong> ATK ${trainer.stats.atk} | SpA ${trainer.stats.spatk} | DEF ${trainer.stats.def} | BOND ${trainer.stats.affection}</div>
+                    <div><strong>HP:</strong> ${trainer.woundsMax} | <strong>Aura:</strong> ${trainer.auraCurrent || 100}</div>
+                    <div><strong>Starting Gear:</strong> ${trainer.inventory.map(i => i.name).slice(0, 2).join(', ')}</div>
                 </div>
             `;
 
@@ -941,6 +1017,16 @@ class GrimdarkRPGApp {
             this.campaignId = 'onepiece_grand_line';
             this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
             this.currentNode = 'op_ch1_reverse_mountain';
+        } else if (uni === 'pokemon') {
+            const template = PokemonCampaignData.TRAINERS.find(t => t.id === selectedId) || PokemonCampaignData.TRAINERS[0];
+            this.character = JSON.parse(JSON.stringify(template));
+            this.character.isPokemon = true;
+            this.character.woundsCurrent = this.character.woundsMax;
+            this.character.funds = 1200;
+            this.character.maidens = PokemonCampaignData.DEVOTED_MAIDENS;
+            this.campaignId = 'pokemon_champions_league';
+            this.currentCampaign = PokemonCampaignData.CAMPAIGN;
+            this.currentNode = 'poke_ch1_saffron_gym';
         } else {
             // Warhammer Acolyte
             const template = WarhammerCampaignData.ARCHETYPES.find(a => a.id === (selectedId || 'interrogator')) || WarhammerCampaignData.ARCHETYPES[0];
@@ -1003,6 +1089,16 @@ class GrimdarkRPGApp {
             if (insanityLabel) insanityLabel.textContent = "Haki Gauge";
             const corruptionLabel = this.corruptionCurrentEl.previousElementSibling;
             if (corruptionLabel) corruptionLabel.textContent = "Pirate Rank";
+        } else if (this.character.isPokemon) {
+            this.fateCurrentEl.textContent = '4 Badges';
+            this.insanityCurrentEl.textContent = `${this.character.auraCurrent || 100}%`;
+            this.corruptionCurrentEl.textContent = 'Ace Master';
+            const fateBoxLabel = this.fateCurrentEl.previousElementSibling;
+            if (fateBoxLabel) fateBoxLabel.textContent = "League Badges";
+            const insanityLabel = this.insanityCurrentEl.previousElementSibling;
+            if (insanityLabel) insanityLabel.textContent = "Aura Gauge";
+            const corruptionLabel = this.corruptionCurrentEl.previousElementSibling;
+            if (corruptionLabel) corruptionLabel.textContent = "Trainer Rank";
         } else {
             this.fateCurrentEl.textContent = this.character.fatePoints !== undefined ? this.character.fatePoints : 3;
             this.insanityCurrentEl.textContent = this.character.insanity || 0;
@@ -1017,7 +1113,7 @@ class GrimdarkRPGApp {
 
         // Render stats dynamically based on universe rules
         this.statGridEl.innerHTML = '';
-        const rulesEngine = this.character.isFate ? FateRules : (this.character.isOnePiece ? OnePieceRules : WarhammerRules);
+        const rulesEngine = this.character.isFate ? FateRules : (this.character.isOnePiece ? OnePieceRules : (this.character.isPokemon ? PokemonRules : WarhammerRules));
         const statDefinitions = rulesEngine.STAT_NAMES;
 
         Object.keys(statDefinitions).forEach(statKey => {
@@ -1167,6 +1263,9 @@ class GrimdarkRPGApp {
             } else if (this.character && this.character.isOnePiece) {
                 statUsed = w.type === 'ranged' ? 'kenbun' : 'might';
                 statVal = this.character.stats ? (this.character.stats[w.type === 'ranged' ? 'kenbunshoku' : 'might'] || 50) : 50;
+            } else if (this.character && this.character.isPokemon) {
+                statUsed = w.type === 'ranged' ? 'spatk' : 'atk';
+                statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
             } else {
                 statUsed = w.type === 'ranged' ? 'bs' : 'ws';
                 statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
@@ -1312,7 +1411,7 @@ class GrimdarkRPGApp {
             const mod = opt.modifier || 0;
             const res = WarhammerRules.testSkill(statVal, mod);
 
-            const rulesEngine = this.character.isFate ? FateRules : (this.character.isOnePiece ? OnePieceRules : WarhammerRules);
+            const rulesEngine = this.character.isFate ? FateRules : (this.character.isOnePiece ? OnePieceRules : (this.character.isPokemon ? PokemonRules : WarhammerRules));
             const statName = (rulesEngine.STAT_NAMES[opt.stat] && rulesEngine.STAT_NAMES[opt.stat].name) || opt.stat.toUpperCase();
 
             this.displayDiceResult(res, `${statName} Check`);
@@ -1340,6 +1439,9 @@ class GrimdarkRPGApp {
             statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
         } else if (this.character && this.character.isOnePiece) {
             statUsed = weapon.type === 'ranged' ? 'kenbunshoku' : 'might';
+            statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
+        } else if (this.character && this.character.isPokemon) {
+            statUsed = weapon.type === 'ranged' ? 'spatk' : 'atk';
             statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
         } else {
             statUsed = weapon.type === 'ranged' ? 'bs' : 'ws';
@@ -1420,6 +1522,8 @@ class GrimdarkRPGApp {
             agVal = this.character.stats ? (this.character.stats.agi || 50) : 50;
         } else if (this.character && this.character.isOnePiece) {
             agVal = this.character.stats ? (this.character.stats.agility || 50) : 50;
+        } else if (this.character && this.character.isPokemon) {
+            agVal = this.character.stats ? (this.character.stats.spd || 50) : 50;
         } else {
             agVal = this.character.stats ? (this.character.stats.ag || 50) : 50;
         }
@@ -1449,6 +1553,8 @@ class GrimdarkRPGApp {
                 tVal = this.character.stats ? (this.character.stats.end || 40) : 40;
             } else if (this.character && this.character.isOnePiece) {
                 tVal = this.character.stats ? (this.character.stats.fortitude || 40) : 40;
+            } else if (this.character && this.character.isPokemon) {
+                tVal = this.character.stats ? (this.character.stats.def || 40) : 40;
             } else {
                 tVal = this.character.stats ? (this.character.stats.t || 40) : 40;
             }
@@ -1711,7 +1817,7 @@ class GrimdarkRPGApp {
     }
 
     toggleUniverse() {
-        const universes = ['warhammer', 'fate', 'onepiece'];
+        const universes = ['warhammer', 'fate', 'onepiece', 'pokemon'];
         const currentIdx = universes.indexOf(this.universe || 'warhammer');
         const nextUniverse = universes[(currentIdx + 1) % universes.length];
         this.switchUniverse(nextUniverse);
@@ -1745,11 +1851,13 @@ class GrimdarkRPGApp {
         window.soundEngine.playSuccess();
 
         // Update body theme classes
-        document.body.classList.remove('theme-fate', 'theme-onepiece');
+        document.body.classList.remove('theme-fate', 'theme-onepiece', 'theme-pokemon');
         if (uni === 'fate') {
             document.body.classList.add('theme-fate');
         } else if (uni === 'onepiece') {
             document.body.classList.add('theme-onepiece');
+        } else if (uni === 'pokemon') {
+            document.body.classList.add('theme-pokemon');
         }
 
         // Check if there is an existing save slot for this realm
@@ -1768,6 +1876,9 @@ class GrimdarkRPGApp {
                 } else if (uni === 'onepiece') {
                     this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
                     if (this.character) this.character.isOnePiece = true;
+                } else if (uni === 'pokemon') {
+                    this.currentCampaign = PokemonCampaignData.CAMPAIGN;
+                    if (this.character) this.character.isPokemon = true;
                 } else {
                     this.currentCampaign = this.campaignId === 'lost_primarch' 
                         ? WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN 
@@ -1775,6 +1886,7 @@ class GrimdarkRPGApp {
                     if (this.character) {
                         delete this.character.isFate;
                         delete this.character.isOnePiece;
+                        delete this.character.isPokemon;
                     }
                 }
                 this.currentNode = data.currentNode;
@@ -1812,6 +1924,14 @@ class GrimdarkRPGApp {
                 this.character.funds = 1500;
                 this.character.crew = OnePieceCampaignData.CREW_OFFICERS;
                 this.currentNode = 'op_ch1_reverse_mountain';
+            } else if (uni === 'pokemon') {
+                this.campaignId = 'pokemon_champions_league';
+                this.currentCampaign = PokemonCampaignData.CAMPAIGN;
+                this.character = JSON.parse(JSON.stringify(PokemonCampaignData.TRAINERS[0]));
+                this.character.isPokemon = true;
+                this.character.funds = 1200;
+                this.character.maidens = PokemonCampaignData.DEVOTED_MAIDENS;
+                this.currentNode = 'poke_ch1_saffron_gym';
             } else {
                 this.campaignId = 'lost_primarch';
                 this.currentCampaign = WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN;
@@ -1824,7 +1944,7 @@ class GrimdarkRPGApp {
 
         // Ensure character's funds is defined
         if (this.character && this.character.funds === undefined) {
-            this.character.funds = (uni === 'fate') ? 800 : (uni === 'onepiece' ? 1500 : 1000);
+            this.character.funds = (uni === 'fate') ? 800 : (uni === 'onepiece' ? 1500 : (uni === 'pokemon' ? 1200 : 1000));
         }
 
         this.updateHeaderTitles();
@@ -2327,7 +2447,7 @@ class GrimdarkRPGApp {
         if (!this.character) return [];
         
         // Strict segregation: Ensure companions match active realm
-        const currentUniverse = this.character.isFate ? 'fate' : (this.character.isOnePiece ? 'onepiece' : 'warhammer');
+        const currentUniverse = this.character.isFate ? 'fate' : (this.character.isOnePiece ? 'onepiece' : (this.character.isPokemon ? 'pokemon' : 'warhammer'));
         if (!this.character.companions || this.character.companionsUniverse !== currentUniverse) {
             this.character.companionsUniverse = currentUniverse;
             if (currentUniverse === 'fate') {
@@ -2424,6 +2544,84 @@ class GrimdarkRPGApp {
                         canRomance: true,
                         perk: 'Marine Cipher Intel: Reveals naval blockade patrol routes and weapon caches.',
                         quote: '"I am a soldier of Justice! I will never acknowledge a pirate pirate... so stop staring!"'
+                    }
+                ];
+            } else if (currentUniverse === 'pokemon') {
+                this.character.companions = [
+                    {
+                        id: 'cynthia_champion',
+                        name: 'Champion Cynthia',
+                        title: 'Sinnoh League Champion // Dragon Mistress',
+                        avatar: '👑',
+                        status: 'ally',
+                        affection: 75,
+                        obedience: 35,
+                        gender: 'female',
+                        voicePitch: 1.06,
+                        voiceRate: 0.94,
+                        canRomance: true,
+                        perk: 'Garchomp Dragon Rush: Deals +25 crushing damage and protects against mental disruption.',
+                        quote: '"The bond between trainer and maiden transcends any battle. Show me your heart\'s true flame."'
+                    },
+                    {
+                        id: 'sabrina_psychic',
+                        name: 'Gym Leader Sabrina',
+                        title: 'Saffron City Gym Leader // Mistress of Telepathy',
+                        avatar: '🔮',
+                        status: 'ally',
+                        affection: 70,
+                        obedience: 45,
+                        gender: 'female',
+                        voicePitch: 1.15,
+                        voiceRate: 0.92,
+                        canRomance: true,
+                        perk: 'Telepathic Future Sight: Predicts enemy movements, granting +15 to Speed and Evasion.',
+                        quote: '"Our minds are already entwined... your thoughts feel so intoxicatingly warm. Do not pull away."'
+                    },
+                    {
+                        id: 'erika_grass',
+                        name: 'Gym Leader Erika',
+                        title: 'Celadon City Gym Leader // Mistress of Aromatherapy',
+                        avatar: '🌸',
+                        status: 'ally',
+                        affection: 80,
+                        obedience: 30,
+                        gender: 'female',
+                        voicePitch: 1.20,
+                        voiceRate: 0.95,
+                        canRomance: true,
+                        perk: 'Aromatherapy Healing: Regenerates 4 HP each round and cures all status ailments.',
+                        quote: '"Breathe in the jasmine tea, my dear Champion... let me tend to your road-weary shoulders."'
+                    },
+                    {
+                        id: 'lorelei_ice',
+                        name: 'Elite Lorelei',
+                        title: 'Indigo Elite Four // Ice & Frost Queen',
+                        avatar: '❄️',
+                        status: 'ally',
+                        affection: 65,
+                        obedience: 30,
+                        gender: 'female',
+                        voicePitch: 1.08,
+                        voiceRate: 0.96,
+                        canRomance: true,
+                        perk: 'Absolute Zero Shield: Freezes incoming kinetic attacks, reducing all physical damage by 50%.',
+                        quote: '"Beneath this icy exterior burns a passion colder than glacier ice... and twice as dangerous to touch."'
+                    },
+                    {
+                        id: 'nessa_water',
+                        name: 'Gym Leader Nessa',
+                        title: 'Hulbury Gym Leader // Oceanic Siren & Supermodel',
+                        avatar: '🌊',
+                        status: 'ally',
+                        affection: 68,
+                        obedience: 25,
+                        gender: 'female',
+                        voicePitch: 1.18,
+                        voiceRate: 1.02,
+                        canRomance: true,
+                        perk: 'Hydro Torrent: Grants +10 Speed and empowers all special attacks with armor-piercing force.',
+                        quote: '"Out in the deep water, there are no secrets between us. Let us see if you can keep up with my tide!"'
                     }
                 ];
             } else {

@@ -1868,6 +1868,36 @@ body.theme-onepiece .aquila-badge {
 }
 
 /* =========================================================
+   POKÉMON CHAMPION'S LEAGUE THEME OVERRIDES (.theme-pokemon)
+   ========================================================= */
+body.theme-pokemon {
+    --bg-void: #12091c;
+    --bg-surface: #1e102d;
+    --bg-panel: #27143c;
+    --border-brass: #eab308;
+    --border-iron: #4c1d95;
+    --gold-imperial: #f59e0b;
+    --gold-bright: #fbbf24;
+    --crimson-blood: #db2777;
+    --crimson-bright: #f43f5e;
+    --terminal-green: #38bdf8;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(244, 63, 94, 0.18) 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.16) 0%, transparent 50%),
+        linear-gradient(rgba(18, 9, 28, 0.95), rgba(18, 9, 28, 0.95));
+}
+
+body.theme-pokemon .aquila-badge {
+    color: #f43f5e;
+    text-shadow: 0 0 15px rgba(244, 63, 94, 0.6);
+}
+
+#realm-card-pokemon:hover {
+    border-color: #f43f5e;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), 0 0 20px rgba(244, 63, 94, 0.35);
+}
+
+/* =========================================================
    UNIVERSAL UNIVERSE SELECTION START MENU
    ========================================================= */
 .universe-menu-backdrop {

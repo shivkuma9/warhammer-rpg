@@ -364,6 +364,7 @@ Lyra giggles playfully, rising from the divan and stepping behind you, wrapping 
                     badge: 'LEGENDARY CONQUEST',
                     badgeClass: 'threat-sanctum',
                     icon: '👑',
+                    image: 'assets/onepiece_ship.jpg',
                     quote: '"With you as our Captain, we will never surrender to any power in the world."',
                     tags: ['Pirate Sovereign', '500M Bounty', 'Grand Line Conquerors']
                 },

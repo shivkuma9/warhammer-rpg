@@ -250,6 +250,22 @@ const UniverseStoreData = {
             { id: 'op_st_5', name: 'Sanji Special Vitality Feast', price: 180, type: 'consumable', count: 2, heals: 12, desc: 'Gourmet Pirate recipe instantly restoring 12 HP and max stamina.' },
             { id: 'op_st_6', name: 'Log Pose to New World', price: 600, type: 'relic', desc: 'Triple-needle compass that detects hidden magnetic islands and treasure.' }
         ]
+    },
+    pokemon: {
+        currencyName: 'Poké-Dollars (₽)',
+        currencySymbol: '₽',
+        storeTitle: 'SILPH CO. & INDIGO LEAGUE EMPORIUM',
+        storeDesc: 'Requisition master-crafted capture gear, high-grade elixirs, battle accessories, and rare catalysts for League Maidens.',
+        merchantQuote: '"Welcome to the Silph Emporium! Whether you need Max Potions or silk kimonos for your gym dates, we have the finest in Kanto and Sinnoh."',
+        merchantName: 'Silph Co. Executive Clerk',
+        items: [
+            { id: 'pk_st_1', name: 'Silph Master Ball Sphere', price: 650, type: 'relic', desc: 'Legendary prototype capture sphere with a 100% success rate on any mythical entity.' },
+            { id: 'pk_st_2', name: 'Full Restore Elixir (x3)', price: 220, type: 'consumable', count: 3, heals: 14, desc: 'Complete rejuvenation spray curing fatigue and restoring all lost HP.' },
+            { id: 'pk_st_3', name: 'Sacred Phoenix Ash', price: 350, type: 'consumable', count: 1, heals: 25, desc: 'Golden embers of Ho-Oh that revive any fallen ally to full vitality.' },
+            { id: 'pk_st_4', name: 'Celadon Silk Kimono', price: 400, type: 'armor', armorBonus: 2, desc: 'Fine Celadon silk woven with aromatic herbs, conferring +2 Defense and soothing aura.' },
+            { id: 'pk_st_5', name: 'Focus Band of Endurance', price: 300, type: 'relic', desc: 'Crimson headband that guarantees survival with 1 HP when taking a fatal strike.' },
+            { id: 'pk_st_6', name: 'Cynthia\'s Platinum Dragon Seal', price: 700, type: 'relic', desc: 'Ancient Sinnoh relic boosting Special Attack and Aura damage by +20%.' }
+        ]
     }
 };
 
@@ -363,7 +379,42 @@ const CompanionRules = {
     }
 };
 
+// ==========================================
+// Pokémon Rules Engine (Indigo & Sinnoh League)
+// ==========================================
+const PokemonRules = {
+    STAT_NAMES: {
+        atk: { name: 'Attack', short: 'ATK', desc: 'Physical strike power, close combat, and heavy moves' },
+        spatk: { name: 'Special Attack', short: 'SpA', desc: 'Elemental mastery, energy blasts, aura waves, and psionics' },
+        def: { name: 'Defense', short: 'DEF', desc: 'Physical resilience, tough hide, and shielding fortitude' },
+        spdef: { name: 'Special Defense', short: 'SpD', desc: 'Elemental resistance, mental barrier, and mystic endurance' },
+        spd: { name: 'Speed', short: 'SPD', desc: 'Reflexes, agility, evasion, and priority strike timing' },
+        affection: { name: 'Maiden Bond / Charm', short: 'BOND', desc: 'Emotional connection, charisma, and romantic devotion' }
+    },
+
+    // Convert D100 roll into Pokemon League test
+    testCheck(statValue, modifier = 0) {
+        return WarhammerRules.testSkill(statValue, modifier);
+    },
+
+    // Calculate move clash and elemental damage
+    calculateMoveDamage(move, attackerStat, defenderStat) {
+        const base = Math.floor(Math.random() * 25) + 35;
+        const attackMult = (attackerStat || 60) / 50;
+        const rawDamage = Math.floor(base * attackMult);
+        const soak = Math.floor((defenderStat || 50) * 0.35);
+        const damage = Math.max(15, rawDamage - soak);
+        return {
+            rawDamage,
+            damage,
+            crit: Math.random() > 0.8,
+            summary: `Hit for ${damage} damage (Soaked ${soak})`
+        };
+    }
+};
+
 window.WarhammerRules = WarhammerRules;
 window.FateRules = FateRules;
 window.OnePieceRules = OnePieceRules;
+window.PokemonRules = PokemonRules;
 window.CompanionRules = CompanionRules;

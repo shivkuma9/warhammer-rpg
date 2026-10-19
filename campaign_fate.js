@@ -301,6 +301,7 @@ At that moment, your familiars transmit frantic mental alarms—an assassin or s
                     badge: 'SOUL CONFLUENCE',
                     badgeClass: 'threat-sanctum',
                     icon: '💖',
+                    image: 'assets/saber_portrait.jpg',
                     quote: '"Ah... my circuits are singing. Master, our souls fit together so intimately..."',
                     tags: ['Deep Devotion', 'Circuit Resonance', 'Maximum Prana']
                 },
@@ -552,6 +553,7 @@ Berserker is thrashing blindly through the crates, unable to locate your positio
                     badge: 'SANCTUARY OF DEVOTION',
                     badgeClass: 'threat-sanctum',
                     icon: '💖',
+                    image: 'assets/saber_portrait.jpg',
                     quote: '"I fought for ideals once. But now, in this quiet room... I fight only for you."',
                     tags: ['Deep Affection', 'Holy Grail In Sight', 'True Companionship']
                 },
@@ -602,6 +604,7 @@ They lean in, their forehead resting tenderly against yours, warm breath minglin
                     badge: 'TRIUMPH COMPLETE',
                     badgeClass: 'threat-sanctum',
                     icon: '👑',
+                    image: 'assets/saber_portrait.jpg',
                     quote: '"No matter which timeline unfolds, my soul belongs to you."',
                     tags: ['Holy Grail Claimed', 'Eternal Covenant', 'Fuyuki Dawn']
                 },
