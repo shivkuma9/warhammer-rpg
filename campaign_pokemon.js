@@ -132,6 +132,57 @@ const PokemonCampaignData = {
             canRomance: true,
             status: 'ally',
             perk: 'Hydro Torrent: Grants +10 Speed and empowers all water/special attacks with armor-piercing force.'
+        },
+        {
+            id: 'gardevoir_aria',
+            name: 'Gardevoir (Aria)',
+            title: 'The Radiant Embrace Maiden // Telepathic Consort',
+            role: 'Psychic & Fairy Guardian',
+            avatar: '👰',
+            gender: 'female',
+            voicePitch: 1.25,
+            voiceRate: 0.90,
+            stats: { atk: 50, spatk: 95, def: 60, spdef: 92, spd: 80, affection: 92 },
+            quote: '"My heart beats only for you, my beloved Trainer... I would create a black hole or cross the cosmos just to stay in your warm embrace."',
+            desc: 'A gorgeous, graceful humanoid Gardevoir who bonded with you through pure soul resonance. In a flowing white silk gown with emerald locks and a glowing ruby chest horn, she communicates through sweet, affectionate telepathy and guards you with unconditional devotion.',
+            image: 'assets/gardevoir_maiden.jpg',
+            canRomance: true,
+            status: 'romance',
+            perk: 'Black Hole Soul Bond: Shields against fatal strikes and boosts Special Attack by +20.'
+        },
+        {
+            id: 'lopunny_chloe',
+            name: 'Lopunny (Chloe)',
+            title: 'The Agile Rabbit Maiden // Close-Combat Sweetheart',
+            role: 'Normal & Fighting Striker',
+            avatar: '🐰',
+            gender: 'female',
+            voicePitch: 1.30,
+            voiceRate: 1.05,
+            stats: { atk: 76, spatk: 54, def: 70, spdef: 72, spd: 90, affection: 88 },
+            quote: '"Yay! Another victory together! Now come here, you promised me cuddles and ear scratches!"',
+            desc: 'An energetic, cute, and remarkably affectionate Lopunny with fluffy fur cuffs and long ears. Playful, loving, and fiercely protective in close combat, she loves resting on your lap during campsite breaks.',
+            image: 'assets/lopunny_tsareena_maiden.jpg',
+            canRomance: true,
+            status: 'romance',
+            perk: 'High-Jump Kick Blitz: Deals +20 kinetic damage on close attacks and +15 to evasion.'
+        },
+        {
+            id: 'tsareena_victoria',
+            name: 'Tsareena (Queen Victoria)',
+            title: 'The Sovereign Blossom Queen // Haughty Royal Consort',
+            role: 'Grass Royalty & Striker',
+            avatar: '👑',
+            gender: 'female',
+            voicePitch: 1.12,
+            voiceRate: 0.95,
+            stats: { atk: 88, spatk: 50, def: 78, spdef: 78, spd: 74, affection: 84 },
+            quote: '"Fools dare look at my Trainer? Trop Kick them into oblivion! ...Ahem, now that they are gone, stroke my hair, my King."',
+            desc: 'A haughty, glamorous humanoid queen with cascading berry-hued foliage and a golden tiara. Regal and commanding to outsiders, she melts completely when alone in your arms, demanding gentle pampering.',
+            image: 'assets/lopunny_tsareena_maiden.jpg',
+            canRomance: true,
+            status: 'romance',
+            perk: 'Queenly Majesty: Completely prevents enemy surprise attacks and priority strikes.'
         }
     ],
 
@@ -364,9 +415,109 @@ Her telepathic whisper purrs inside your mind, tingling with pure affection:
 You spend an unforgettable, passionate night in Sabrina's tender embrace, cementing her place as the first devoted maiden in your League Harem!`,
                 options: [
                     {
+                        approach: 'mystery',
+                        tag: '✨ PSYCHIC SIGNAL',
+                        label: 'Investigate a starlit psychic distress beacon in the outskirts woods (Encounter Gardevoir!)',
+                        actionType: 'advance',
+                        targetNode: 'poke_ch1_gardevoir_rescue'
+                    },
+                    {
                         approach: 'advance',
-                        tag: '🌸 JOURNEY ONWARD',
+                        tag: '🌸 CELADON EXPEDITION',
                         label: 'Kiss Sabrina good morning and set out toward Celadon City\'s famous flower gardens',
+                        actionType: 'advance',
+                        targetNode: 'poke_ch2_celadon_hotsprings'
+                    }
+                ]
+            },
+
+            // Chapter 1.5: Gardevoir Rescue & Bond
+            {
+                id: 'poke_ch1_gardevoir_rescue',
+                title: 'Act I.5: The Starlit Sanctuary & Gardevoir\'s Vow',
+                act: 'Act I.5 - The Embrace Maiden',
+                atmosphere: 'Silvery moonlight filtering through ancient willow boughs, floating starlight motes, sinister poacher nets hummed with electric restraints, a radiant shiny Gardevoir pinned against a stone altar.',
+                illustration: {
+                    title: 'The Captured Embrace Maiden',
+                    badge: 'RESCUE ENCOUNTER',
+                    badgeClass: 'threat-moderate',
+                    icon: '👰',
+                    image: 'assets/gardevoir_maiden.jpg',
+                    quote: '"Someone... please... someone whose heart knows true love..."',
+                    tags: ['Gardevoir', 'Aria', 'Psychic Maiden', 'Poachers Ambush']
+                },
+                narrative: `Following the gentle, desperate psychic beacon outside Saffron City, you slip into a secluded moonlit forest grove.
+
+A squad of heavily armored rogue poachers have cornered a breathtaking humanoid Pokémon: a radiant Gardevoir with shimmering emerald hair and a flawless white silk dress. Her ruby chest horn glows faintly, but electric containment nets have pinned her against an ancient mossy shrine.
+
+The lead poacher brandishes an electrified shock prod with an ugly sneer:
+
+"Heh, a purebred shiny Gardevoir! Black market collectors in Kanto will pay millions for an embrace maiden this gorgeous. Pack her into the cryo-cage!"
+
+The Gardevoir's crimson eyes turn toward you through the shadows. A soft, musical telepathic plea echoes directly into your mind, filled with vulnerability and hope:
+
+*Trainer... I sense your aura. It is pure, fearless, and overflowing with radiant warmth. Please... do not let them taint my soul!*`,
+                options: [
+                    {
+                        approach: 'special',
+                        tag: '💥 AURA BURST',
+                        label: 'Channel an Aura Wave to shatter the shock nets and blow the poachers into the trees (SP. ATK)',
+                        stat: 'spatk',
+                        modifier: +10,
+                        actionType: 'check',
+                        desc: 'Vaporize the poachers\' mechanical traps with high-frequency aura energy.',
+                        successNode: 'poke_ch1_gardevoir_intimacy',
+                        failNode: 'poke_ch1_gardevoir_intimacy'
+                    },
+                    {
+                        approach: 'charm',
+                        tag: '❤️ TELEPATHIC RESONANCE',
+                        label: 'Project your soul\'s devotion directly to Gardevoir, empowering her with mutual bond energy (AFFECTION)',
+                        stat: 'affection',
+                        modifier: +10,
+                        actionType: 'check',
+                        desc: 'Form an instant soul-link, letting her unleash a devastating Moonblast alongside you.',
+                        successNode: 'poke_ch1_gardevoir_intimacy',
+                        failNode: 'poke_ch1_gardevoir_intimacy'
+                    }
+                ]
+            },
+
+            // Gardevoir Intimacy Node
+            {
+                id: 'poke_ch1_gardevoir_intimacy',
+                title: 'Act I.5: Under the Moonlit Willows with Gardevoir Aria',
+                act: 'Act I.5 - The Maiden\'s Sacred Devotion',
+                atmosphere: 'Gentle night breeze rustling willow leaves, glowing psychic butterflies dancing in the air, starlit reflections on the pond, Gardevoir resting her head against your chest.',
+                illustration: {
+                    title: 'Gardevoir Aria\'s Eternal Love',
+                    badge: 'POKÉMON MAIDEN BOND',
+                    badgeClass: 'threat-low',
+                    icon: '❤️',
+                    image: 'assets/gardevoir_maiden.jpg',
+                    quote: '"My heart beats only for you, my beloved Trainer... in your arms is the only place I ever want to be."',
+                    tags: ['Gardevoir Romanced', 'Heart Horn Resonance', 'Harem Consort']
+                },
+                narrative: `With a blinding detonation of psychic light and aura shockwaves, the poachers are scattered into the dark forest, their broken traps smoking in the grass!
+
+You rush to the shrine, slicing through the remaining mesh nets. As the restraints fall away, Gardevoir stumbles forward—straight into your arms.
+
+You catch her gently against your chest. Her skin is remarkably soft, warm, and porcelain smooth. Her slender arms slide up around your shoulders, clutching you tightly as her body trembles with relief.
+
+Her glowing red heart-horn rests directly against your chest, pulsating in perfect rhythm with your own heartbeat.
+
+A tender, melodious voice sings directly in your mind, her porcelain cheeks coloring with a deep, passionate rose blush:
+
+*I felt your soul the instant you stepped into this glade. My kind only gives our heart to one trainer across an entire lifetime... a trainer we would tear reality apart to protect. You are the sovereign my heart has waited for.*
+
+She tilts her face upward, her ruby eyes shining with tears of blissful devotion. Leaning up on her toes, Gardevoir presses her soft, cool lips tenderly against yours in a sweet, telepathically charged kiss that sends shivers of pure ecstasy tingling down your spine!
+
+She bestows upon you her cherished **Heart Pearl**, joining your personal Harem as your sworn, eternal Pokémon Maiden consort!`,
+                options: [
+                    {
+                        approach: 'advance',
+                        tag: '🌸 SET SAIL FOR CELADON',
+                        label: 'Walk hand-in-hand with Gardevoir toward Celadon City\'s fragrant botanical gardens',
                         actionType: 'advance',
                         targetNode: 'poke_ch2_celadon_hotsprings'
                     }
@@ -449,12 +600,59 @@ She slides into your arms, the warm water swirling around your entwined bodies. 
 
 "Take the Rainbow Badge, my beloved. And take my heart with it. Whenever you need healing or tender comfort, I will be waiting in your arms."
 
-With both Sabrina and Erika now fiercely devoted to your journey, your path leads north toward the frigid mountain peaks of Sinnoh!`,
+With both Sabrina, Erika, and your devoted Gardevoir Aria now fiercely committed to your journey, your path opens to the Celadon Royal Pavilion!`,
                 options: [
+                    {
+                        approach: 'advance',
+                        tag: '🐰 MEET LOPUNNY & TSAREENA',
+                        label: 'Visit the Royal Blossom Pavilion to meet the playful Lopunny Chloe and Queen Tsareena Victoria',
+                        actionType: 'advance',
+                        targetNode: 'poke_ch2_lopunny_tsareena_intimacy'
+                    },
                     {
                         approach: 'advance',
                         tag: '❄️ TOWARD THE FROZEN PEAKS',
                         label: 'Pack your cold-weather gear and set out for the snowfields of Snowpoint',
+                        actionType: 'advance',
+                        targetNode: 'poke_ch3_snowpoint_cabin'
+                    }
+                ]
+            },
+
+            // Lopunny & Tsareena Pavilion Node
+            {
+                id: 'poke_ch2_lopunny_tsareena_intimacy',
+                title: 'Act II.5: The Royal Blossom Pavilion with Lopunny & Tsareena',
+                act: 'Act II.5 - The Playful & The Queen',
+                atmosphere: 'Golden sunlight streaming through bamboo lattices, scent of blooming orchids and sweet berries, Lopunny playfully resting on your lap while Tsareena crosses her royal legs on a velvet divan.',
+                illustration: {
+                    title: 'Lopunny Chloe & Queen Tsareena',
+                    badge: 'POKÉMON MAIDEN DUO',
+                    badgeClass: 'threat-low',
+                    icon: '👑',
+                    image: 'assets/lopunny_tsareena_maiden.jpg',
+                    quote: '"You have both a fluffy cuddly sweetheart and a majestic queen to serve you now, my King!"',
+                    tags: ['Lopunny Chloe', 'Tsareena Victoria', 'Harem Recruits', 'Blossom Pavilion']
+                },
+                narrative: `Before departing Celadon City, Erika guides you to the private Royal Blossom Pavilion at the edge of the estate.
+
+Sitting upon a lavish silk-draped gazebo are two legendary Pokémon maidens:
+
+• **Chloe the Lopunny**, with fluffy cream-colored fur cuffs and long, twitching bunny ears, bounds over the moment she sees you! With a delighted giggle, she hops directly into your lap, wrapping her fluffy arms around your neck and nuzzling her soft cheek against yours:
+"Yay! The new Champion challenger! Erika said you were the most handsome trainer in the world, and she was right! You have to pet my ears... please?"
+
+• Meanwhile, seated on an elevated royal divan, **Queen Victoria the Tsareena** crosses her long, shapely emerald legs. Her golden tiara glints in the sunlight, and her rich magenta crown of foliage billows with elegance. She looks down at you with a regal, teasing smirk:
+"Hmph. Chloe has no shame at all. But I suppose a trainer capable of charming Sabrina and Erika deserves my royal attention."
+
+Victoria glides over, placing one slender finger beneath your chin. Her proud royal demeanor melts into an alluring smile as she leans close, whispering against your ear:
+"Kneel or don't kneel, my handsome King... from this day forth, my Trop Kicks defend your honor, and my heart belongs in your bed."
+
+With Lopunny snuggled adorably against your chest and Queen Tsareena leaning affectionately against your shoulder, your Pokémon Maiden harem expands with fierce loyalty and boundless charm!`,
+                options: [
+                    {
+                        approach: 'advance',
+                        tag: '❄️ TOWARD THE FROZEN PEAKS',
+                        label: 'Set out for the mountain peaks of Snowpoint City with your maidens by your side',
                         actionType: 'advance',
                         targetNode: 'poke_ch3_snowpoint_cabin'
                     }
@@ -765,12 +963,15 @@ Outside, a private hot spring lagoon steams under the silver moonlight. Inside, 
 Around you, your devoted League Maidens have gathered to celebrate your glorious ascension:
 
 • **Champion Cynthia**, stunning in a silken robe, leans against your chest, feeding you sweet berries and gazing into your eyes with boundless pride.
+• **Gardevoir Aria**, in her radiant white gown, wraps her arms around your waist, her telepathic vows filling your soul with eternal love and warmth.
 • **Sabrina**, her cold facade entirely gone, rests her head upon your lap, her telepathic whispers sending shivers of delight through your mind.
+• **Lopunny Chloe**, cute and playful, cuddles into your side, purring with joy as you stroke her soft fluffy ears.
+• **Tsareena Queen Victoria**, regal and stunning, feeds you chilled peeled grapes with a proud, adoring smile.
 • **Erika**, wearing a delicate floral kimono, pours warm aromatic sake for you with a tender, adoring blush.
 • **Lorelei**, holding a glass of chilled champagne, smiles seductively as she removes her glasses and traces a finger across your jaw.
 • **Nessa**, radiant and playful in a swimsuit, splashes playfully in the adjoining warm pool, beckoning you to join her for a midnight swim.
 
-"You conquered every challenge, mastered every battle, and earned the eternal love of the strongest maidens in the world," Cynthia whispers softly, pressing her lips to your neck. "Your name will be carved in golden legend forever."
+"You conquered every challenge, mastered every battle, and earned the eternal love of the strongest maidens and Pokémon companions in the world," Cynthia whispers softly, pressing her lips to your neck. "Your name will be carved in golden legend forever."
 
 You have completed the Pokémon: Maidens of the League campaign as the supreme Sovereign and Champion! You may explore new realms, replay with different archetypes, or reign forever over your glorious harem!`,
                 options: [

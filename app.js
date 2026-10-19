@@ -2622,6 +2622,51 @@ class GrimdarkRPGApp {
                         canRomance: true,
                         perk: 'Hydro Torrent: Grants +10 Speed and empowers all special attacks with armor-piercing force.',
                         quote: '"Out in the deep water, there are no secrets between us. Let us see if you can keep up with my tide!"'
+                    },
+                    {
+                        id: 'gardevoir_aria',
+                        name: 'Gardevoir (Aria)',
+                        title: 'The Radiant Embrace Maiden // Telepathic Consort',
+                        avatar: '👰',
+                        status: 'romance',
+                        affection: 92,
+                        obedience: 80,
+                        gender: 'female',
+                        voicePitch: 1.25,
+                        voiceRate: 0.90,
+                        canRomance: true,
+                        perk: 'Black Hole Soul Bond: Shields against fatal strikes and boosts Special Attack by +20.',
+                        quote: '"My heart beats only for you, my beloved Trainer... I would create a black hole or cross the cosmos just to stay in your warm embrace."'
+                    },
+                    {
+                        id: 'lopunny_chloe',
+                        name: 'Lopunny (Chloe)',
+                        title: 'The Agile Rabbit Maiden // Close-Combat Sweetheart',
+                        avatar: '🐰',
+                        status: 'romance',
+                        affection: 88,
+                        obedience: 75,
+                        gender: 'female',
+                        voicePitch: 1.30,
+                        voiceRate: 1.05,
+                        canRomance: true,
+                        perk: 'High-Jump Kick Blitz: Deals +20 kinetic damage on close attacks and +15 to evasion.',
+                        quote: '"Yay! Another victory together! Now come here, you promised me cuddles and ear scratches!"'
+                    },
+                    {
+                        id: 'tsareena_victoria',
+                        name: 'Tsareena (Queen Victoria)',
+                        title: 'The Sovereign Blossom Queen // Haughty Royal Consort',
+                        avatar: '👑',
+                        status: 'romance',
+                        affection: 84,
+                        obedience: 70,
+                        gender: 'female',
+                        voicePitch: 1.12,
+                        voiceRate: 0.95,
+                        canRomance: true,
+                        perk: 'Queenly Majesty: Completely prevents enemy surprise attacks and priority strikes.',
+                        quote: '"Fools dare look at my Trainer? Trop Kick them into oblivion! ...Ahem, now that they are gone, stroke my hair, my King."'
                     }
                 ];
             } else {
