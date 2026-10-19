@@ -420,11 +420,20 @@ class GrimdarkRPGApp {
         // Realm Hub Select buttons & cards
         document.querySelectorAll('.realm-card, .select-realm-btn').forEach(el => {
             el.addEventListener('click', (e) => {
+                e.stopPropagation();
                 const realm = el.dataset.realm || el.closest('.realm-card')?.dataset.realm || 'warhammer';
                 this.switchUniverse(realm);
                 if (this.universeMenuBackdropEl) this.universeMenuBackdropEl.style.display = 'none';
             });
         });
+
+        const mobileRealmBtn = document.getElementById('mobile-realm-btn');
+        if (mobileRealmBtn) {
+            mobileRealmBtn.addEventListener('click', () => {
+                window.soundEngine.playClick();
+                this.showRealmHub();
+            });
+        }
 
         // Companion Filter Tabs
         [
@@ -461,17 +470,30 @@ class GrimdarkRPGApp {
                 if (this.universe === 'fate') {
                     this.currentCampaign = FateCampaignData.CAMPAIGN;
                     if (!this.campaignId) this.campaignId = 'fate_fuyuki_war';
+                    if (this.character) this.character.isFate = true;
                 } else if (this.universe === 'onepiece') {
                     this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
                     if (!this.campaignId) this.campaignId = 'onepiece_grand_line';
+                    if (this.character) this.character.isOnePiece = true;
                 } else {
                     if (!this.campaignId) this.campaignId = this.character && this.character.isPrimarch ? 'lost_primarch' : 'sector_44';
                     this.currentCampaign = this.campaignId === 'lost_primarch' 
                         ? WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN 
                         : WarhammerCampaignData.CAMPAIGN;
+                    if (this.character) {
+                        delete this.character.isFate;
+                        delete this.character.isOnePiece;
+                    }
                 }
 
                 this.currentNode = data.currentNode;
+                // Auto-recover if node id is missing or broken in save
+                if (!this.currentNode || !this.findNode(this.currentNode)) {
+                    if (this.currentCampaign && this.currentCampaign.chapters && this.currentCampaign.chapters.length > 0) {
+                        this.currentNode = this.currentCampaign.chapters[0].id;
+                    }
+                }
+
                 this.currentCombat = data.currentCombat;
                 this.diceHistory = data.diceHistory || [];
                 this.updateHeaderTitles();
@@ -1029,7 +1051,14 @@ class GrimdarkRPGApp {
     }
 
     renderStoryNode() {
-        const node = this.findNode(this.currentNode);
+        let node = this.findNode(this.currentNode);
+        // Automatic recovery: if current chapter ID not found, fallback to initial chapter of active campaign
+        if (!node) {
+            if (this.currentCampaign && this.currentCampaign.chapters && this.currentCampaign.chapters.length > 0) {
+                this.currentNode = this.currentCampaign.chapters[0].id;
+                node = this.findNode(this.currentNode);
+            }
+        }
         if (!node) return;
 
         this.chapterTitleEl.textContent = node.title;
@@ -1105,12 +1134,23 @@ class GrimdarkRPGApp {
         this.optionsContainerEl.innerHTML = '';
 
         // Weapon attack options
-        const weapons = this.character.inventory.filter(i => i.type === 'ranged' || i.type === 'melee');
+        const weapons = (this.character.inventory || []).filter(i => i.type === 'ranged' || i.type === 'melee');
         weapons.forEach(w => {
             const btn = document.createElement('button');
             btn.className = 'tactical-choice-btn';
-            const statUsed = w.type === 'ranged' ? 'bs' : 'ws';
-            const statVal = this.character.stats[statUsed];
+
+            let statUsed = 'ws';
+            let statVal = 50;
+            if (this.character && this.character.isFate) {
+                statUsed = w.type === 'ranged' ? 'mana' : 'str';
+                statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
+            } else if (this.character && this.character.isOnePiece) {
+                statUsed = w.type === 'ranged' ? 'kenbun' : 'might';
+                statVal = this.character.stats ? (this.character.stats[w.type === 'ranged' ? 'kenbunshoku' : 'might'] || 50) : 50;
+            } else {
+                statUsed = w.type === 'ranged' ? 'bs' : 'ws';
+                statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
+            }
 
             btn.innerHTML = `
                 <span>⚔ Strike with <strong>${w.name}</strong> (${w.damage}, Pen ${w.pen})</span>
@@ -1273,8 +1313,19 @@ class GrimdarkRPGApp {
     }
 
     executePlayerAttack(weapon) {
-        const statUsed = weapon.type === 'ranged' ? 'bs' : 'ws';
-        const statVal = this.character.stats[statUsed];
+        let statUsed = 'ws';
+        let statVal = 50;
+        if (this.character && this.character.isFate) {
+            statUsed = weapon.type === 'ranged' ? 'mana' : 'str';
+            statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
+        } else if (this.character && this.character.isOnePiece) {
+            statUsed = weapon.type === 'ranged' ? 'kenbunshoku' : 'might';
+            statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
+        } else {
+            statUsed = weapon.type === 'ranged' ? 'bs' : 'ws';
+            statVal = this.character.stats ? (this.character.stats[statUsed] || 50) : 50;
+        }
+
         const res = WarhammerRules.testSkill(statVal, 0);
 
         if (weapon.type === 'ranged') {
@@ -1344,7 +1395,15 @@ class GrimdarkRPGApp {
 
     executeEvade() {
         window.soundEngine.playDiceRoll();
-        const res = WarhammerRules.testSkill(this.character.stats.ag, 10);
+        let agVal = 50;
+        if (this.character && this.character.isFate) {
+            agVal = this.character.stats ? (this.character.stats.agi || 50) : 50;
+        } else if (this.character && this.character.isOnePiece) {
+            agVal = this.character.stats ? (this.character.stats.agility || 50) : 50;
+        } else {
+            agVal = this.character.stats ? (this.character.stats.ag || 50) : 50;
+        }
+        const res = WarhammerRules.testSkill(agVal, 10);
         this.displayDiceResult(res, "Agility Evasion Test");
 
         if (res.isSuccess) {
@@ -1365,8 +1424,16 @@ class GrimdarkRPGApp {
 
         if (isHit) {
             const enemyWep = this.currentCombat.weapon || { name: 'Vicious Strike', damage: '1d10+3', pen: 1 };
+            let tVal = 40;
+            if (this.character && this.character.isFate) {
+                tVal = this.character.stats ? (this.character.stats.end || 40) : 40;
+            } else if (this.character && this.character.isOnePiece) {
+                tVal = this.character.stats ? (this.character.stats.fortitude || 40) : 40;
+            } else {
+                tVal = this.character.stats ? (this.character.stats.t || 40) : 40;
+            }
             const dmgInfo = WarhammerRules.calculateDamage(enemyWep, {
-                t: this.character.stats.t,
+                t: tVal,
                 armor: this.character.armor
             }, atkRoll);
 
@@ -1674,14 +1741,26 @@ class GrimdarkRPGApp {
                 this.campaignId = data.campaignId;
                 if (uni === 'fate') {
                     this.currentCampaign = FateCampaignData.CAMPAIGN;
+                    if (this.character) this.character.isFate = true;
                 } else if (uni === 'onepiece') {
                     this.currentCampaign = OnePieceCampaignData.CAMPAIGN;
+                    if (this.character) this.character.isOnePiece = true;
                 } else {
                     this.currentCampaign = this.campaignId === 'lost_primarch' 
                         ? WarhammerCampaignData.LOST_PRIMARCH_CAMPAIGN 
                         : WarhammerCampaignData.CAMPAIGN;
+                    if (this.character) {
+                        delete this.character.isFate;
+                        delete this.character.isOnePiece;
+                    }
                 }
                 this.currentNode = data.currentNode;
+                // Auto-recover if node id is missing or broken in save
+                if (!this.currentNode || !this.findNode(this.currentNode)) {
+                    if (this.currentCampaign && this.currentCampaign.chapters && this.currentCampaign.chapters.length > 0) {
+                        this.currentNode = this.currentCampaign.chapters[0].id;
+                    }
+                }
                 this.currentCombat = data.currentCombat;
                 this.diceHistory = data.diceHistory || [];
             } catch (e) {
@@ -1740,6 +1819,17 @@ class GrimdarkRPGApp {
         const MASTER_HASH = '31a79bb331fac359221c292b76428f08ad29f55a2257e4e88dc996e84c016203'; // shiva123
         const isUnlocked = localStorage.getItem('inquisitorial_unlocked') === 'true';
 
+        // Bind password visibility toggle
+        const togglePassBtn = document.getElementById('toggle-gate-pass-btn');
+        if (togglePassBtn) {
+            togglePassBtn.addEventListener('click', () => {
+                const isPassword = this.gatePassInputEl.type === 'password';
+                this.gatePassInputEl.type = isPassword ? 'text' : 'password';
+                togglePassBtn.textContent = isPassword ? '🙈' : '👁️';
+                togglePassBtn.title = isPassword ? 'Hide Password' : 'Show Password';
+            });
+        }
+
         if (isUnlocked) {
             this.lockGateBackdropEl.style.display = 'none';
         } else {
@@ -1760,6 +1850,9 @@ class GrimdarkRPGApp {
                 this.lockErrorMsgEl.textContent = '';
                 this.gatePassInputEl.value = '';
                 this.lockGateBackdropEl.style.display = 'none';
+
+                // Automatically open Realm Selection Hub upon authentication so the player chooses their world
+                this.showRealmHub();
             } else {
                 window.soundEngine.playFailure();
                 this.lockErrorMsgEl.textContent = '☠ ACCESS DENIED // INVALID CLEARANCE CIPHER';
@@ -1806,11 +1899,18 @@ class GrimdarkRPGApp {
         const tabs = this.mobileNavEl.querySelectorAll('.mobile-tab-btn');
         tabs.forEach(btn => {
             btn.addEventListener('click', () => {
+                if (btn.id === 'mobile-realm-btn') {
+                    window.soundEngine.playClick();
+                    this.showRealmHub();
+                    return;
+                }
+
                 const tabName = btn.dataset.tab;
                 if (tabName === 'companions') {
                     this.showCompanionsModal();
                     return;
                 }
+                if (!tabName) return;
 
                 tabs.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');

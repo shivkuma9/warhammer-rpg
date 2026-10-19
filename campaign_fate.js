@@ -371,6 +371,45 @@ Before you can break their defiance further, a furious seismic tremor shakes the
                 ]
             },
 
+            // Branch 6: Cautious Pact (Failure outcome for Act I summoning checks)
+            {
+                id: 'fate_ch1_pact_cautious',
+                title: 'A Fragile Pact of Survival',
+                act: 'Act I - Pact Sealed',
+                atmosphere: 'A cold night breeze through shattered stained glass, watchful silence as your Servant assesses your trembling magic circuits.',
+                illustration: {
+                    title: 'Wary Alliance in the Moonlight',
+                    badge: 'CAUTIOUS PACT',
+                    badgeClass: 'threat-moderate',
+                    icon: '🛡️',
+                    quote: '"Your spirit wavers, Master. Yet the contract is struck. Let us see if your resolve sharpens in battle."',
+                    tags: ['Prana Strain', 'Wary Bond', 'Holy Grail War']
+                },
+                narrative: `Your concentration fractures slightly under the crushing spiritual pressure of the summoned Heroic Spirit. The magical backlash jolts through your magic circuits, and you stumble back against the altar, gasping for breath.
+
+Your Servant steps down from the pedestal, their weapon resting loosely at their side, gaze guarded yet solemn:
+
+"Steady yourself, Master. The summoning is complete, and the Command Seals upon your hand bind my blade to your cause. Though your experience in magecraft is untested, battle will forge what words cannot."
+
+Before you can recover your breath, the perimeter wards around your workshop violently detonate in blue flame! An immense crimson prana shockwave erupts from the direction of Fuyuki harbor. An enemy Servant is already prowling the city!`,
+                options: [
+                    {
+                        approach: 'force',
+                        tag: '⚔️ FORCE',
+                        label: 'Rush directly to Shinto harbor to face the enemy head-on',
+                        actionType: 'advance',
+                        nextNode: 'fate_ch2_harbor_skirmish'
+                    },
+                    {
+                        approach: 'mind',
+                        tag: '🧠 MIND',
+                        label: 'Take the high ground around Fuyuki Bridge to scout the enemy first',
+                        actionType: 'advance',
+                        nextNode: 'fate_ch2_bridge_recon'
+                    }
+                ]
+            },
+
             // Act II: Harbor Skirmish against Berserker / Lancer
             {
                 id: 'fate_ch2_harbor_skirmish',
