@@ -332,6 +332,14 @@ class GrimdarkRPGApp {
             });
         }
 
+        if (this.storeModalEl) {
+            this.storeModalEl.addEventListener('click', (e) => {
+                if (e.target === this.storeModalEl) {
+                    this.storeModalEl.style.display = 'none';
+                }
+            });
+        }
+
         // Cloud Database Sync Modal events
         if (this.cloudModalBtnEl) {
             this.cloudModalBtnEl.addEventListener('click', () => {
@@ -346,6 +354,21 @@ class GrimdarkRPGApp {
                 this.cloudModalEl.style.display = 'none';
             });
         }
+
+        if (this.cloudModalEl) {
+            this.cloudModalEl.addEventListener('click', (e) => {
+                if (e.target === this.cloudModalEl) {
+                    this.cloudModalEl.style.display = 'none';
+                }
+            });
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (this.storeModalEl) this.storeModalEl.style.display = 'none';
+                if (this.cloudModalEl) this.cloudModalEl.style.display = 'none';
+            }
+        });
 
         if (this.cloudConnectBtnEl) {
             this.cloudConnectBtnEl.addEventListener('click', () => {
@@ -1380,9 +1403,14 @@ class GrimdarkRPGApp {
         window.soundEngine.playClick();
         this.stopVox();
 
+        // Resolve destination from nextNode, targetNode, successNode, or failNode
+        const destination = opt.nextNode || opt.targetNode || opt.successNode || opt.failNode;
+
         if (opt.actionType === 'advance') {
-            this.currentNode = opt.nextNode;
-            this.renderStoryNode();
+            if (destination) {
+                this.currentNode = destination;
+                this.renderStoryNode();
+            }
             return;
         }
 
@@ -1395,7 +1423,7 @@ class GrimdarkRPGApp {
                     this.character.fatePoints -= 1;
                 }
                 window.soundEngine.playSuccess();
-                this.currentNode = opt.nextNode;
+                this.currentNode = destination;
                 this.renderCharacterPanel();
                 this.renderStoryNode();
             } else {
@@ -1412,22 +1440,29 @@ class GrimdarkRPGApp {
             const res = WarhammerRules.testSkill(statVal, mod);
 
             const rulesEngine = this.character.isFate ? FateRules : (this.character.isOnePiece ? OnePieceRules : (this.character.isPokemon ? PokemonRules : WarhammerRules));
-            const statName = (rulesEngine.STAT_NAMES[opt.stat] && rulesEngine.STAT_NAMES[opt.stat].name) || opt.stat.toUpperCase();
+            const statName = (rulesEngine.STAT_NAMES[opt.stat] && rulesEngine.STAT_NAMES[opt.stat].name) || (opt.stat ? opt.stat.toUpperCase() : 'CHECK');
 
             this.displayDiceResult(res, `${statName} Check`);
 
             if (res.isSuccess) {
                 window.soundEngine.playSuccess();
-                this.currentNode = opt.successNode;
+                this.currentNode = opt.successNode || destination;
             } else {
                 window.soundEngine.playFailure();
-                this.currentNode = opt.failNode;
+                this.currentNode = opt.failNode || destination;
             }
 
             setTimeout(() => {
                 this.renderCharacterPanel();
                 this.renderStoryNode();
             }, 800);
+            return;
+        }
+
+        // Direct fallback for custom or unclassified options
+        if (destination) {
+            this.currentNode = destination;
+            this.renderStoryNode();
         }
     }
 

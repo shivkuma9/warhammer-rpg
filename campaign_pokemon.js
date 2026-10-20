@@ -322,6 +322,7 @@ She walks over and gently bumps her shoulder against yours, offering you a warm,
                         tag: '🪨 TOWARD PEWTER GYM',
                         label: 'Head through Viridian Forest toward Pewter City to face the Rock Gym',
                         actionType: 'advance',
+                        nextNode: 'poke_ch1_pewter_boulder',
                         targetNode: 'poke_ch1_pewter_boulder'
                     }
                 ]
@@ -356,6 +357,7 @@ Maya laughs helplessly, stepping forward and playfully punching your arm:
                         tag: '🪨 TOWARD PEWTER GYM',
                         label: 'March toward Pewter City to claim your first League badge',
                         actionType: 'advance',
+                        nextNode: 'poke_ch1_pewter_boulder',
                         targetNode: 'poke_ch1_pewter_boulder'
                     }
                 ]
@@ -485,6 +487,7 @@ Word of your heroism spreads to the Cerulean Gym, where the water trainers gladl
                         tag: '🏙️ MARCH TO SAFFRON',
                         label: 'Travel south toward Saffron City to investigate the Team Rocket syndicate blockade',
                         actionType: 'advance',
+                        nextNode: 'poke_ch3_team_rocket_saffron',
                         targetNode: 'poke_ch3_team_rocket_saffron'
                     }
                 ]
@@ -565,6 +568,7 @@ Inside, purple neon illuminations and levitating marble platforms invite you int
                         tag: '🔮 FACE SABRINA',
                         label: 'Ascend the levitating platforms to challenge Sabrina for the Marsh Badge',
                         actionType: 'advance',
+                        nextNode: 'poke_ch4_saffron_gym',
                         targetNode: 'poke_ch4_saffron_gym'
                     }
                 ]
@@ -662,6 +666,7 @@ She steps down from the dais, her high boots clicking rhythmically on the polish
                         tag: '❤️ INTIMACY',
                         label: 'Take Sabrina\'s slender hand and accompany her to her private penthouse suite',
                         actionType: 'advance',
+                        nextNode: 'poke_ch4_sabrina_intimacy',
                         targetNode: 'poke_ch4_sabrina_intimacy'
                     }
                 ]
@@ -696,6 +701,7 @@ Sabrina glides toward you as if drawn by a magnetic tide. Her slender fingers re
                         tag: '❤️ INTIMACY',
                         label: 'Wrap your arm around Sabrina\'s waist and ascend to her private penthouse',
                         actionType: 'advance',
+                        nextNode: 'poke_ch4_sabrina_intimacy',
                         targetNode: 'poke_ch4_sabrina_intimacy'
                     }
                 ]
@@ -728,6 +734,7 @@ Sabrina laughs softly—a rare, musical sound that fills the hollow gym. She des
                         tag: '❤️ INTIMACY',
                         label: 'Follow Sabrina to her private luxury suite',
                         actionType: 'advance',
+                        nextNode: 'poke_ch4_sabrina_intimacy',
                         targetNode: 'poke_ch4_sabrina_intimacy'
                     }
                 ]
@@ -758,6 +765,7 @@ Sabrina steps off her dais and floats gracefully toward you. Her slender hand ge
                         tag: '❤️ INTIMACY',
                         label: 'Allow Sabrina to levitate you into her luxurious private penthouse',
                         actionType: 'advance',
+                        nextNode: 'poke_ch4_sabrina_intimacy',
                         targetNode: 'poke_ch4_sabrina_intimacy'
                     }
                 ]
@@ -797,6 +805,7 @@ You spend an unforgettable, passionate night in Sabrina's tender embrace, cement
                         tag: '✨ PSYCHIC SIGNAL',
                         label: 'Investigate a starlit psychic distress beacon in the outskirts woods (Encounter Gardevoir!)',
                         actionType: 'advance',
+                        nextNode: 'poke_ch5_gardevoir_rescue',
                         targetNode: 'poke_ch5_gardevoir_rescue'
                     },
                     {
@@ -804,6 +813,7 @@ You spend an unforgettable, passionate night in Sabrina's tender embrace, cement
                         tag: '🌸 CELADON EXPEDITION',
                         label: 'Kiss Sabrina good morning and set out toward Celadon City\'s famous flower gardens',
                         actionType: 'advance',
+                        nextNode: 'poke_ch6_celadon_hotsprings',
                         targetNode: 'poke_ch6_celadon_hotsprings'
                     }
                 ]
@@ -897,6 +907,7 @@ She bestows upon you her cherished **Heart Pearl**, joining your personal Harem 
                         tag: '🌸 SET SAIL FOR CELADON',
                         label: 'Walk hand-in-hand with Gardevoir toward Celadon City\'s fragrant botanical gardens',
                         actionType: 'advance',
+                        nextNode: 'poke_ch6_celadon_hotsprings',
                         targetNode: 'poke_ch6_celadon_hotsprings'
                     }
                 ]
@@ -985,6 +996,7 @@ With Sabrina, Erika, and your devoted Gardevoir Aria now fiercely committed to y
                         tag: '🐰 MEET LOPUNNY & TSAREENA',
                         label: 'Visit the Royal Blossom Pavilion to meet the playful Lopunny Chloe and Queen Tsareena Victoria',
                         actionType: 'advance',
+                        nextNode: 'poke_ch6_lopunny_tsareena_intimacy',
                         targetNode: 'poke_ch6_lopunny_tsareena_intimacy'
                     },
                     {
@@ -992,6 +1004,7 @@ With Sabrina, Erika, and your devoted Gardevoir Aria now fiercely committed to y
                         tag: '❄️ TOWARD THE FROZEN PEAKS',
                         label: 'Pack your cold-weather gear and set out for the snowfields of Snowpoint',
                         actionType: 'advance',
+                        nextNode: 'poke_ch7_snowpoint_cabin',
                         targetNode: 'poke_ch7_snowpoint_cabin'
                     }
                 ]
@@ -1020,6 +1033,7 @@ With Sabrina, Erika, and your devoted Gardevoir Aria now fiercely committed to y
                         tag: '🐰 MEET LOPUNNY & TSAREENA',
                         label: 'Visit the Royal Blossom Pavilion to meet the playful Lopunny Chloe and Queen Tsareena Victoria',
                         actionType: 'advance',
+                        nextNode: 'poke_ch6_lopunny_tsareena_intimacy',
                         targetNode: 'poke_ch6_lopunny_tsareena_intimacy'
                     },
                     {
@@ -1027,6 +1041,7 @@ With Sabrina, Erika, and your devoted Gardevoir Aria now fiercely committed to y
                         tag: '❄️ TOWARD THE FROZEN PEAKS',
                         label: 'Set out for the mountain peaks of Snowpoint City',
                         actionType: 'advance',
+                        nextNode: 'poke_ch7_snowpoint_cabin',
                         targetNode: 'poke_ch7_snowpoint_cabin'
                     }
                 ]
@@ -1067,6 +1082,7 @@ With Lopunny snuggled adorably against your chest and Queen Tsareena leaning aff
                         tag: '❄️ TOWARD THE FROZEN PEAKS',
                         label: 'Set out for the mountain peaks of Snowpoint City with your maidens by your side',
                         actionType: 'advance',
+                        nextNode: 'poke_ch7_snowpoint_cabin',
                         targetNode: 'poke_ch7_snowpoint_cabin'
                     }
                 ]
@@ -1155,6 +1171,7 @@ By morning, the storm has cleared to reveal the shimmering northern aurora over 
                         tag: '🦊 THE SHRINE OF KITSUNE',
                         label: 'Ascend to the sacred frozen forest of Mt. Coronet to seek the legendary Kitsune Maiden',
                         actionType: 'advance',
+                        nextNode: 'poke_ch8_kaguya_ninetales',
                         targetNode: 'poke_ch8_kaguya_ninetales'
                     }
                 ]
@@ -1181,6 +1198,7 @@ By morning, the storm has cleared to reveal the shimmering northern aurora over 
                         tag: '🦊 THE SHRINE OF KITSUNE',
                         label: 'Ascend to the sacred frozen forest of Mt. Coronet to seek the legendary Kitsune Maiden',
                         actionType: 'advance',
+                        nextNode: 'poke_ch8_kaguya_ninetales',
                         targetNode: 'poke_ch8_kaguya_ninetales'
                     }
                 ]
@@ -1270,6 +1288,7 @@ With your full team of devoted Pokémon Maidens assembled, the gates of the Indi
                         tag: '👑 ASCEND TO INDIGO PLATEAU',
                         label: 'March to the summit of the Indigo Plateau for the final Champion Duel with Cynthia',
                         actionType: 'advance',
+                        nextNode: 'poke_ch9_indigo_championship',
                         targetNode: 'poke_ch9_indigo_championship'
                     }
                 ]
@@ -1367,6 +1386,7 @@ Cynthia gasps in pure admiration: "What breathtaking spirit!"`,
                         tag: '👑 SUPREME FINISHER',
                         label: 'Unleash your final transcendent strike to claim victory!',
                         actionType: 'advance',
+                        nextNode: 'poke_ch9_cynthia_romance',
                         targetNode: 'poke_ch9_cynthia_romance'
                     }
                 ]
@@ -1410,6 +1430,7 @@ Her voice whispers warmly against your lips:
                         tag: '🥂 THE HAREM VILLA CELEBRATION',
                         label: 'Proceed to the Grand Champions\' Villa for the ultimate harem epilogue celebration',
                         actionType: 'advance',
+                        nextNode: 'poke_ch9_champion_harem_epilogue',
                         targetNode: 'poke_ch9_champion_harem_epilogue'
                     }
                 ]
@@ -1450,15 +1471,7 @@ Around you, your devoted League Maidens, rival, and Pokémon companions have gat
 "You conquered every challenge, mastered every battle, and earned the eternal love of the strongest maidens and Pokémon companions in the world," Cynthia whispers softly, pressing her lips to your neck. "Your name will be carved in golden legend forever."
 
 You have completed the Pokémon: Maidens of the League campaign from scratch as the supreme Sovereign and Champion! You may explore new realms, replay with different archetypes, or reign forever over your glorious harem!`,
-                options: [
-                    {
-                        approach: 'restart',
-                        tag: '🌌 REIGN / SWITCH REALMS',
-                        label: 'Visit the Realm Hub to explore Warhammer, Fate, or One Piece, or replay from Route 1 with new choices',
-                        actionType: 'advance',
-                        targetNode: 'poke_ch1_route1_start'
-                    }
-                ]
+                options: []
             }
         ]
     }
